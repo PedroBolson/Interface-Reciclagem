@@ -1,28 +1,35 @@
-// filepath: /Volumes/KINGSTON/Projects/Interface-Reciclagem/src/pages/LandingPage.tsx
-import { useState } from 'react'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import HeroSection from '../components/sections/HeroSection'
+import AboutSection from '../components/sections/AboutSection'
 import FeaturesSection from '../components/sections/FeaturesSection'
 import MaterialsSection from '../components/sections/MaterialsSection'
 import CTASection from '../components/sections/CTASection'
 
-const LandingPage = () => {
-    const [darkMode, setDarkMode] = useState(false)
+interface LandingPageProps {
+    darkMode: boolean
+    toggleDarkMode: () => void
+}
 
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode)
-        document.documentElement.classList.toggle('dark')
-    }
-
+const LandingPage = ({ darkMode, toggleDarkMode }: LandingPageProps) => {
     return (
         <div className="min-h-screen">
             <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-            <HeroSection />
-            <FeaturesSection />
-            <MaterialsSection />
+
+            <section id="home">
+                <HeroSection />
+            </section>
+            <section id="about">
+                <AboutSection />
+            </section>
+            <section id="features">
+                <FeaturesSection />
+            </section>
+            <section id="materials">
+                <MaterialsSection />
+            </section>
             <CTASection />
-            <Footer />
+            <Footer id="contact" />
         </div>
     )
 }
