@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, ChevronUp, LogIn, UserPlus } from 'lucide-react'
+import { ChevronUp, LogIn, UserPlus } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ThemeToggle from '../ui/ThemeToggle'
 
@@ -235,9 +235,50 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                                     {/* Background */}
                                     <div className="absolute inset-0 rounded-lg bg-white/10 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"></div>
 
-                                    {/* Icon */}
-                                    <div className="relative text-black dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">
-                                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                                    {/* Animated Menu Icon */}
+                                    <div className="relative group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">
+                                        <svg
+                                            className="w-6 h-6"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            {/* Primeira barra */}
+                                            <line
+                                                x1="4"
+                                                y1="8"
+                                                x2="20"
+                                                y2="8"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                strokeLinecap="round"
+                                                className={`transform transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? 'translate-y-1 rotate-45' : 'translate-y-0 rotate-0'}`}
+                                                style={{ transformBox: 'fill-box', transformOrigin: 'center center' }}
+                                            />
+
+                                            {/* Segunda barra */}
+                                            <line
+                                                x1="4"
+                                                y1="16"
+                                                x2="20"
+                                                y2="16"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                strokeLinecap="round"
+                                                className={`transform transition-transform duration-300 ease-in-out origin-center ${isMenuOpen ? '-translate-y-1 -rotate-45' : 'translate-y-0 rotate-0'}`}
+                                                style={{ transformBox: 'fill-box', transformOrigin: 'center center' }}
+                                            />
+                                        </svg>
+
+                                        {/* Partículas de energia ao abrir/fechar */}
+                                        {isMenuOpen && (
+                                            <>
+                                                <div className="absolute top-0 left-0 w-1 h-1 bg-green-400 rounded-full animate-menu-particle-1"></div>
+                                                <div className="absolute top-0 right-0 w-1 h-1 bg-blue-400 rounded-full animate-menu-particle-2"></div>
+                                                <div className="absolute bottom-0 left-0 w-0.5 h-0.5 bg-emerald-400 rounded-full animate-menu-particle-3"></div>
+                                                <div className="absolute bottom-0 right-0 w-0.5 h-0.5 bg-cyan-400 rounded-full animate-menu-particle-4"></div>
+                                            </>
+                                        )}
                                     </div>
                                 </button>
                             </div>
@@ -263,8 +304,8 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
 
                                         {/* Text */}
                                         <span className={`relative transition-colors duration-300 ${activeSection === item.id
-                                            ? 'text-green-600 dark:text-green-400 font-semibold'
-                                            : 'text-black dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400'
+                                            ? 'font-semibold'
+                                            : 'group-hover:text-green-600 dark:group-hover:text-green-400'
                                             }`}>
                                             {item.name}
                                         </span>
@@ -283,8 +324,8 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                                         <div className="absolute inset-0 rounded-lg bg-white/10 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"></div>
 
                                         {/* Content */}
-                                        <LogIn size={18} className="relative text-black/70 dark:text-white/70 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300" />
-                                        <span className="relative text-black dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                        <LogIn size={18} className="relative group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300" />
+                                        <span className="relative group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                             Entrar
                                         </span>
                                     </Link>
@@ -323,6 +364,93 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                     <ChevronUp size={24} className="relative transform group-hover:-translate-y-0.5 transition-transform duration-300" />
                 </button>
             )}
+
+            {/* Estilos customizados para as animações do menu */}
+            <style>{`
+                @keyframes menu-particle-1 {
+                    0% { 
+                        transform: translate(0, 0) scale(0); 
+                        opacity: 0; 
+                    }
+                    20% { 
+                        transform: translate(0, 0) scale(1); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(-8px, -8px) scale(0); 
+                        opacity: 0; 
+                    }
+                }
+
+                @keyframes menu-particle-2 {
+                    0% { 
+                        transform: translate(0, 0) scale(0); 
+                        opacity: 0; 
+                    }
+                    25% { 
+                        transform: translate(0, 0) scale(1); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(8px, -8px) scale(0); 
+                        opacity: 0; 
+                    }
+                }
+
+                @keyframes menu-particle-3 {
+                    0% { 
+                        transform: translate(0, 0) scale(0); 
+                        opacity: 0; 
+                    }
+                    30% { 
+                        transform: translate(0, 0) scale(1); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(-6px, 8px) scale(0); 
+                        opacity: 0; 
+                    }
+                }
+
+                @keyframes menu-particle-4 {
+                    0% { 
+                        transform: translate(0, 0) scale(0); 
+                        opacity: 0; 
+                    }
+                    35% { 
+                        transform: translate(0, 0) scale(1); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(6px, 8px) scale(0); 
+                        opacity: 0; 
+                    }
+                }
+
+                .animate-menu-particle-1 {
+                    animation: menu-particle-1 0.8s ease-out forwards;
+                }
+
+                .animate-menu-particle-2 {
+                    animation: menu-particle-2 0.8s ease-out forwards;
+                    animation-delay: 0.1s;
+                }
+
+                .animate-menu-particle-3 {
+                    animation: menu-particle-3 0.8s ease-out forwards;
+                    animation-delay: 0.2s;
+                }
+
+                .animate-menu-particle-4 {
+                    animation: menu-particle-4 0.8s ease-out forwards;
+                    animation-delay: 0.3s;
+                }
+
+                /* Efeito de glow sutil no hover */}
+                .group:hover svg line {
+                    filter: drop-shadow(0 0 2px currentColor);
+                }
+            `}</style>
         </>
     )
 }
