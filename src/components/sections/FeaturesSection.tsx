@@ -58,7 +58,7 @@ const FeaturesSection = () => {
                     <h2 className="text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-emerald-600 dark:from-green-400 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
                         Como Funciona
                     </h2>
-                    <p className="text-xl max-w-3xl mx-auto leading-relaxed text-gray-600 dark:text-gray-400">
+                    <p className="text-xl max-w-3xl mx-auto leading-relaxed">
                         Um ecossistema completo para transformar reciclagem em recompensas reais
                     </p>
                 </div>

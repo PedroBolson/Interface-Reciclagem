@@ -187,6 +187,44 @@
     overflow-x: hidden;
   }
 
+  /* APLICAÇÃO GLOBAL DE CORES DE TEXTO */
+  /* Garante que elementos sem classe específica herdem as cores corretas */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--text-primary);
+  }
+
+  p,
+  span,
+  div,
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  label {
+    color: inherit;
+  }
+
+  /* Navegação específica */
+  nav,
+  nav * {
+    color: var(--text-primary);
+  }
+
+  /* Links e botões sem classe específica */
+  a:not([class*="bg-"]):not([class*="text-"]) {
+    color: var(--text-primary);
+  }
+
+  button:not([class*="bg-"]):not([class*="text-"]) {
+    color: var(--text-primary);
+  }
+
   /* Scrollbar ultra moderna */
   ::-webkit-scrollbar {
     width: 6px;
@@ -367,33 +405,15 @@
     margin-bottom: 1rem;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .material-icon::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transition: all 0.3s ease;
-    transform: translate(-50%, -50%);
-  }
-
-  .material-icon:hover::before {
-    width: 100%;
-    height: 100%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
 
   .material-plastic {
-    background: linear-gradient(135deg, var(--material-plastic), #2563EB);
+    background: linear-gradient(135deg, var(--material-plastic), #1E40AF);
   }
 
   .material-glass {
-    background: linear-gradient(135deg, var(--material-glass), #0891B2);
+    background: linear-gradient(135deg, var(--material-glass), #0E7490);
   }
 
   .material-metal {
@@ -401,7 +421,7 @@
   }
 
   .material-paper {
-    background: linear-gradient(135deg, var(--material-paper), #D97706);
+    background: linear-gradient(135deg, var(--material-paper), #EA580C);
   }
 
   .material-organic {
@@ -466,6 +486,10 @@
     background-clip: text;
     font-weight: 700;
     letter-spacing: -0.025em;
+  }
+
+  .number-display {
+    font-variant-numeric: tabular-nums;
     /* Melhora legibilidade de números grandes */
   }
 
@@ -527,119 +551,102 @@
 
   /* Logo hover glow effect */
   .logo-glow {
-    filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.3));
-    transition: filter 0.5s ease;
-  }
-
-  .logo-glow:hover {
-    filter: drop-shadow(0 0 30px rgba(34, 197, 94, 0.5));
-  }
-
-  /* Navigation item modern hover effects */
-  .nav-item {
     position: relative;
     overflow: hidden;
   }
 
-  .nav-item::before {
+  .logo-glow::before {
     content: '';
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
+    transition: left 0.8s ease;
   }
 
-  .nav-item:hover::before {
+  .logo-glow:hover::before {
     left: 100%;
   }
 
-  /* Scroll-to-top button enhanced animation */
-  .scroll-top-btn {
-    transform: translateY(100px);
-    opacity: 0;
+  /* Navigation link enhanced effects */
+  .nav-link {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-primary);
   }
 
-  .scroll-top-btn.visible {
-    transform: translateY(0);
-    opacity: 1;
+  .nav-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-eco-primary), var(--color-ocean));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
   }
 
-  .scroll-top-btn:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
+  .nav-link:hover {
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-1px);
+    color: var(--color-eco-primary);
   }
 
-  /* Mobile menu enhanced animation */
-  .mobile-menu {
+  .nav-link:hover::before {
+    width: 80%;
+  }
+
+  /* Mobile menu enhanced animations */
+  .mobile-menu-item {
     opacity: 0;
-    transform: translateY(-10px);
-    animation: slideDown 0.3s ease forwards;
+    transform: translateX(-20px);
+    animation: slideInLeft 0.3s ease forwards;
   }
 
-  @keyframes slideDown {
+  .mobile-menu-item:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .mobile-menu-item:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .mobile-menu-item:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .mobile-menu-item:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes slideInLeft {
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
   }
 
-  /* Logo text shimmer effect */
-  .logo-text {
-    background: linear-gradient(45deg, #22c55e, #3b82f6, #10b981, #06b6d4);
-    background-size: 300% 300%;
-    animation: gradientShift 3s ease infinite;
-  }
-
-  @keyframes gradientShift {
-
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  /* Navigation underline animation enhancement */
-  .nav-underline {
-    height: 2px;
-    background: linear-gradient(90deg, #22c55e, #3b82f6);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .nav-item:hover .nav-underline {
-    transform: scaleX(1);
-  }
-
-  /* Header scroll shadow enhancement */
-  .header-scrolled {
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .dark .header-scrolled {
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.3),
-      0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-
-  /* Futuristic button hover effects */
-  .futuristic-btn {
+  /* Enhanced button styles */
+  .cta-button {
+    background: linear-gradient(135deg, var(--color-eco-primary), var(--color-ocean));
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
   }
 
-  .futuristic-btn::before {
+  .cta-button::before {
     content: '';
     position: absolute;
     top: 0;
@@ -650,35 +657,53 @@
     transition: left 0.6s ease;
   }
 
-  .futuristic-btn:hover::before {
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  }
+
+  .cta-button:hover::before {
     left: 100%;
   }
 
-  .futuristic-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+  /* Theme toggle enhanced with better visual feedback */
+  .theme-toggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Enhanced mobile menu backdrop */
-  .mobile-backdrop {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+  .theme-toggle:hover {
+    background: var(--color-eco-primary);
+    color: white;
+    transform: scale(1.1);
+    border-color: var(--color-eco-primary);
   }
 
-  /* Enhanced glassmorphism effects */
-  .glass-effect {
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+  .theme-toggle::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--color-eco-primary), var(--color-ocean), var(--color-energy), var(--color-eco-primary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
-  .glass-effect-light {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  .theme-toggle:hover::before {
+    opacity: 0.1;
   }
 
-  /* Smooth transitions for all elements */
-  * {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  /* ==========================================================================
+     END HEADER MODERNIZATION
+     ========================================================================== */
 }

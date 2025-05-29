@@ -215,7 +215,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <Link
-                            to="/"
+                            to="/#contact"
                             className="group flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500/20"
                         >
                             <ArrowLeft className="w-5 h-5 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300" />
@@ -302,7 +302,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                         onBlur={() => handleFieldBlur('companyName')}
                                         required
                                         disabled={isSubmitting}
-                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${errors.companyName && touchedFields.has('companyName')
+                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 ${errors.companyName && touchedFields.has('companyName')
                                             ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                             : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                             }`}
@@ -327,7 +327,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                         onBlur={() => handleFieldBlur('contactName')}
                                         required
                                         disabled={isSubmitting}
-                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${errors.contactName && touchedFields.has('contactName')
+                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 ${errors.contactName && touchedFields.has('contactName')
                                             ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                             : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                             }`}
@@ -352,7 +352,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                         onBlur={() => handleFieldBlur('email')}
                                         required
                                         disabled={isSubmitting}
-                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${errors.email && touchedFields.has('email')
+                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 ${errors.email && touchedFields.has('email')
                                             ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                             : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                             }`}
@@ -377,7 +377,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                         onBlur={() => handleFieldBlur('phone')}
                                         required
                                         disabled={isSubmitting}
-                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${errors.phone && touchedFields.has('phone')
+                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 ${errors.phone && touchedFields.has('phone')
                                             ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                             : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                             }`}
@@ -402,7 +402,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                         onBlur={() => handleFieldBlur('location')}
                                         required
                                         disabled={isSubmitting}
-                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none ${errors.location && touchedFields.has('location')
+                                        className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 ${errors.location && touchedFields.has('location')
                                             ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                             : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                             }`}
@@ -463,7 +463,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                     onBlur={() => handleFieldBlur('description')}
                                     rows={3}
                                     disabled={isSubmitting}
-                                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none overflow-y-auto ${errors.description && touchedFields.has('description')
+                                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none overflow-y-auto ${errors.description && touchedFields.has('description')
                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                         : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                         }`}
@@ -495,7 +495,7 @@ const PartnerPage = ({ darkMode, toggleDarkMode }: PartnerPageProps) => {
                                     required
                                     rows={4}
                                     disabled={isSubmitting}
-                                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none overflow-y-auto ${errors.whyPartner && touchedFields.has('whyPartner')
+                                    className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-transparent text-gray-900 dark:text-white focus:ring-2 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed resize-none overflow-y-auto ${errors.whyPartner && touchedFields.has('whyPartner')
                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                         : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
                                         }`}

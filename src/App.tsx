@@ -1,26 +1,22 @@
-import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import LandingPage from './pages/LandingPage'
-import AppDownloadPage from './pages/AppDownloadPage'
 import PartnerPage from './pages/PartnerPage'
+import AppDownloadPage from './pages/AppDownloadPage'
+import UserProgramPage from './pages/UserProgramPage'
+import BusinessProgramPage from './pages/BusinessProgramPage'
 import './index.css'
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false)
-
-  useEffect(() => {
-    const savedMode = localStorage.getItem('darkMode')
-    if (savedMode) {
-      setDarkMode(JSON.parse(savedMode))
-    } else {
-      // Detectar preferência do sistema
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setDarkMode(prefersDark)
-    }
-  }, [])
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode')
+    return saved ? JSON.parse(saved) : false
+  })
 
   useEffect(() => {
     localStorage.setItem('darkMode', JSON.stringify(darkMode))
+
+    // AQUI ESTÁ A CORREÇÃO: aplicar a classe 'dark' no documento
     if (darkMode) {
       document.documentElement.classList.add('dark')
     } else {
@@ -32,7 +28,6 @@ function App() {
     setDarkMode(!darkMode)
   }
 
-  // Componentes temporários para as páginas de autenticação
   const LoginPage = () => (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-8">
@@ -85,12 +80,20 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
+            path="/partner"
+            element={<PartnerPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          />
+          <Route
             path="/app"
             element={<AppDownloadPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
           />
           <Route
-            path="/partner"
-            element={<PartnerPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+            path="/user-program"
+            element={<UserProgramPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          />
+          <Route
+            path="/business-program"
+            element={<BusinessProgramPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
           />
         </Routes>
       </div>
