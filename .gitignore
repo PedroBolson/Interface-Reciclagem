@@ -191,7 +191,7 @@ stats.json
 *.swo
 *~
 
-# Lock files (escolha um)
+# Lock files 
 package-lock.json
 
 # Cache folders
