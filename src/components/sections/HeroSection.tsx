@@ -5,6 +5,7 @@ import StatCard from '../ui/StatCard'
 const HeroSection = () => {
     const navigate = useNavigate()
     const [isVisible, setIsVisible] = useState(false)
+    const [isTrashAnimating, setIsTrashAnimating] = useState(false)
     const sectionRef = useRef<HTMLElement>(null)
 
     const stats = [
@@ -183,6 +184,15 @@ const HeroSection = () => {
         }
     ]
 
+    const handleTrashButtonClick = () => {
+        setIsTrashAnimating(true)
+
+        // Aguarda a animação completar antes de navegar
+        setTimeout(() => {
+            navigate('/register')
+        }, 2000) // 2 segundos para completar toda a animação
+    }
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -240,15 +250,109 @@ const HeroSection = () => {
                     {/* Enhanced Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
                         <button
-                            onClick={() => navigate('/register')}
-                            className="eco-button text-lg px-10 py-5 group relative overflow-hidden shadow-xl hover:shadow-2xl"
+                            onClick={handleTrashButtonClick}
+                            disabled={isTrashAnimating}
+                            className="eco-button text-lg px-10 py-5 group relative overflow-hidden shadow-xl hover:shadow-2xl disabled:cursor-not-allowed"
                         >
                             <span className="flex items-center gap-3 relative z-10">
-                                <svg className="w-6 h-6 transition-transform group-hover:scale-110 group-hover:rotate-12" viewBox="0 0 24 24" fill="none">
-                                    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="currentColor" />
-                                </svg>
-                                Começar Agora
+                                {/* Lixeira SVG Container */}
+                                <div className="relative w-8 h-8">
+                                    {/* Lixeira */}
+                                    <svg
+                                        className={`w-8 h-8 transition-all duration-300 ${isTrashAnimating ? 'animate-bounce' : 'group-hover:scale-110'
+                                            }`}
+                                        viewBox="0 0 32 32"
+                                        fill="none"
+                                    >
+                                        {/* Base da lixeira */}
+                                        <path
+                                            d="M8 10V26C8 27.1 8.9 28 10 28H22C23.1 28 24 27.1 24 26V10H8Z"
+                                            fill="currentColor"
+                                            opacity="0.8"
+                                            className={isTrashAnimating ? 'animate-shake' : ''}
+                                        />
+
+                                        {/* Tampa da lixeira */}
+                                        <path
+                                            d="M6 8H26V10H6V8Z"
+                                            fill="currentColor"
+                                            className={isTrashAnimating ? 'animate-shake' : ''}
+                                        />
+
+                                        {/* Alça da lixeira */}
+                                        <path
+                                            d="M12 6V4C12 3.4 12.4 3 13 3H19C19.6 3 20 3.4 20 4V6H12Z"
+                                            fill="currentColor"
+                                            opacity="0.6"
+                                        />
+
+                                        {/* Linhas de detalhe */}
+                                        <line x1="12" y1="12" x2="12" y2="24" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+                                        <line x1="16" y1="12" x2="16" y2="24" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+                                        <line x1="20" y1="12" x2="20" y2="24" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+                                    </svg>
+
+                                    {/* Lixo voando */}
+                                    <div
+                                        className={`absolute transition-all duration-1000 ${isTrashAnimating
+                                            ? 'animate-trash-fall'
+                                            : 'opacity-0 -top-4 left-0'
+                                            }`}
+                                    >
+                                        <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                                            {/* Papel amassado */}
+                                            <circle cx="8" cy="8" r="6" fill="var(--color-eco-primary)" opacity="0.8" />
+                                            <circle cx="6" cy="6" r="1" fill="var(--color-eco-primary)" opacity="0.6" />
+                                            <circle cx="10" cy="7" r="1" fill="var(--color-eco-primary)" opacity="0.6" />
+                                            <circle cx="8" cy="10" r="1" fill="var(--color-eco-primary)" opacity="0.6" />
+                                        </svg>
+                                    </div>
+
+                                    {/* Segundo lixo */}
+                                    <div
+                                        className={`absolute transition-all duration-1000 ${isTrashAnimating
+                                            ? 'animate-trash-fall-delayed'
+                                            : 'opacity-0 -top-4 right-0'
+                                            }`}
+                                    >
+                                        <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none">
+                                            {/* Folha */}
+                                            <path
+                                                d="M8 2C10 2 14 6 14 10C14 12 12 14 8 14C4 14 2 12 2 10C2 6 6 2 8 2Z"
+                                                fill="var(--color-energy)"
+                                                opacity="0.8"
+                                            />
+                                            <path
+                                                d="M8 2C8 6 8 10 8 14"
+                                                stroke="var(--color-eco-primary)"
+                                                strokeWidth="1"
+                                            />
+                                        </svg>
+                                    </div>
+
+                                    {/* Partículas de impacto */}
+                                    {isTrashAnimating && (
+                                        <>
+                                            <div className="absolute top-6 left-2 w-1 h-1 bg-green-400 rounded-full animate-particle-1"></div>
+                                            <div className="absolute top-6 right-2 w-1 h-1 bg-blue-400 rounded-full animate-particle-2"></div>
+                                            <div className="absolute top-7 left-4 w-0.5 h-0.5 bg-emerald-400 rounded-full animate-particle-3"></div>
+                                        </>
+                                    )}
+                                </div>
+
+                                <span className={`transition-all duration-300 ${isTrashAnimating ? 'text-green-300' : ''
+                                    }`}>
+                                    {isTrashAnimating ? 'Reciclando...' : 'Começar Agora'}
+                                </span>
                             </span>
+
+                            {/* Efeito de ondas ao clicar */}
+                            {isTrashAnimating && (
+                                <div className="absolute inset-0 rounded-lg">
+                                    <div className="absolute inset-0 bg-green-400/20 rounded-lg animate-ping"></div>
+                                    <div className="absolute inset-0 bg-blue-400/20 rounded-lg animate-ping" style={{ animationDelay: '0.3s' }}></div>
+                                </div>
+                            )}
                         </button>
 
                         <button
@@ -279,6 +383,106 @@ const HeroSection = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Estilos customizados para as animações */}
+            <style>{`
+                @keyframes trash-fall {
+                    0% {
+                        opacity: 1;
+                        transform: translateY(-16px) translateX(-8px) rotate(0deg);
+                    }
+                    30% {
+                        transform: translateY(8px) translateX(-4px) rotate(-45deg);
+                    }
+                    60% {
+                        transform: translateY(12px) translateX(2px) rotate(-90deg);
+                    }
+                    80% {
+                        transform: translateY(14px) translateX(1px) rotate(-120deg);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translateY(16px) translateX(0px) rotate(-180deg);
+                    }
+                }
+
+                @keyframes trash-fall-delayed {
+                    0% {
+                        opacity: 0;
+                    }
+                    20% {
+                        opacity: 1;
+                        transform: translateY(-16px) translateX(8px) rotate(0deg);
+                    }
+                    50% {
+                        transform: translateY(8px) translateX(4px) rotate(45deg);
+                    }
+                    80% {
+                        transform: translateY(12px) translateX(-2px) rotate(90deg);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translateY(16px) translateX(0px) rotate(180deg);
+                    }
+                }
+
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10% { transform: translateX(-2px) rotate(-1deg); }
+                    20% { transform: translateX(2px) rotate(1deg); }
+                    30% { transform: translateX(-2px) rotate(-1deg); }
+                    40% { transform: translateX(2px) rotate(1deg); }
+                    50% { transform: translateX(-1px) rotate(-0.5deg); }
+                    60% { transform: translateX(1px) rotate(0.5deg); }
+                    70% { transform: translateX(-1px) rotate(-0.5deg); }
+                    80% { transform: translateX(1px) rotate(0.5deg); }
+                    90% { transform: translateX(-1px) rotate(-0.5deg); }
+                }
+
+                @keyframes particle-1 {
+                    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                    100% { transform: translate(-10px, -10px) scale(0); opacity: 0; }
+                }
+
+                @keyframes particle-2 {
+                    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                    100% { transform: translate(10px, -8px) scale(0); opacity: 0; }
+                }
+
+                @keyframes particle-3 {
+                    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                    100% { transform: translate(-6px, -12px) scale(0); opacity: 0; }
+                }
+
+                .animate-trash-fall {
+                    animation: trash-fall 1s ease-in-out forwards;
+                }
+
+                .animate-trash-fall-delayed {
+                    animation: trash-fall-delayed 1.2s ease-in-out forwards;
+                    animation-delay: 0.3s;
+                }
+
+                .animate-shake {
+                    animation: shake 0.5s ease-in-out;
+                    animation-delay: 0.8s;
+                }
+
+                .animate-particle-1 {
+                    animation: particle-1 0.8s ease-out forwards;
+                    animation-delay: 1.2s;
+                }
+
+                .animate-particle-2 {
+                    animation: particle-2 0.8s ease-out forwards;
+                    animation-delay: 1.3s;
+                }
+
+                .animate-particle-3 {
+                    animation: particle-3 0.8s ease-out forwards;
+                    animation-delay: 1.4s;
+                }
+            `}</style>
         </section>
     )
 }
