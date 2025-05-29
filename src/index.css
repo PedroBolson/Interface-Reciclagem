@@ -1,0 +1,502 @@
+@import "tailwindcss";
+
+/* Animações modernas */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-eco {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 20px rgba(52, 211, 153, 0);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@layer base {
+  :root {
+    /* === CORES PRIMÁRIAS SUSTENTÁVEIS === */
+    --color-eco-primary: #10B981;
+    /* Verde esmeralda vibrante */
+    --color-eco-primary-light: #34D399;
+    /* Verde menta */
+    --color-eco-primary-dark: #047857;
+    /* Verde floresta */
+    --color-eco-primary-50: #ECFDF5;
+    /* Verde muito claro */
+    --color-eco-primary-100: #D1FAE5;
+    /* Verde suave */
+
+    /* === CORES SECUNDÁRIAS OCEANO === */
+    --color-ocean: #0891B2;
+    /* Azul oceano */
+    --color-ocean-light: #22D3EE;
+    /* Ciano cristalino */
+    --color-ocean-dark: #0E7490;
+    /* Azul profundo */
+    --color-ocean-50: #F0F9FF;
+    /* Azul céu */
+
+    /* === CORES DE ACENTO ENERGIA === */
+    --color-energy: #F59E0B;
+    /* Laranja solar */
+    --color-energy-light: #FCD34D;
+    /* Amarelo dourado */
+    --color-energy-dark: #D97706;
+    /* Laranja terroso */
+
+    /* === BACKGROUNDS MODERNOS === */
+    --color-bg-light: #FEFEFE;
+    /* Branco puro mas suave */
+    --color-bg-light-alt: #F8FAFC;
+    /* Cinza glacial */
+    --color-bg-light-surface: #FFFFFF;
+    /* Branco cristalino */
+
+    --color-bg-dark: #0F172A;
+    /* Azul noite profundo */
+    --color-bg-dark-alt: #1E293B;
+    /* Cinza ardósia */
+    --color-bg-dark-surface: #334155;
+    /* Cinza moderno */
+
+    /* === TEXTOS INTELIGENTES === */
+    --color-text-primary: #1F2937;
+    /* Quase preto suave */
+    --color-text-secondary: #6B7280;
+    /* Cinza médio */
+    --color-text-muted: #9CA3AF;
+    /* Cinza claro */
+
+    --color-text-dark-primary: #F9FAFB;
+    /* Quase branco */
+    --color-text-dark-secondary: #D1D5DB;
+    /* Cinza claro */
+    --color-text-dark-muted: #9CA3AF;
+    /* Cinza médio */
+
+    /* === BORDAS ELEGANTES === */
+    --color-border-light: rgba(226, 232, 240, 0.8);
+    --color-border-light-strong: #E2E8F0;
+    --color-border-dark: rgba(71, 85, 105, 0.8);
+    --color-border-dark-strong: #475569;
+
+    /* === CORES ESPECÍFICAS DE MATERIAIS === */
+    --material-plastic: #3B82F6;
+    /* Azul moderno */
+    --material-glass: #06B6D4;
+    /* Ciano brilhante */
+    --material-metal: #64748B;
+    /* Cinza metálico */
+    --material-paper: #F59E0B;
+    /* Laranja papel */
+    --material-organic: #22C55E;
+    /* Verde vida */
+    --material-oil: #8B5CF6;
+    /* Roxo petróleo */
+    --material-battery: #EF4444;
+    /* Vermelho energia */
+    --material-electronic: #6366F1;
+    /* Índigo tech */
+
+    /* === ESTADOS E FEEDBACK === */
+    --color-success: #10B981;
+    --color-success-bg: #ECFDF5;
+    --color-warning: #F59E0B;
+    --color-warning-bg: #FFFBEB;
+    --color-error: #EF4444;
+    --color-error-bg: #FEF2F2;
+    --color-info: #3B82F6;
+    --color-info-bg: #EFF6FF;
+
+    /* Aplicando tema claro como padrão */
+    --bg: var(--color-bg-light);
+    --bg-alt: var(--color-bg-light-alt);
+    --surface: var(--color-bg-light-surface);
+    --text-primary: var(--color-text-primary);
+    --text-secondary: var(--color-text-secondary);
+    --text-muted: var(--color-text-muted);
+    --border: var(--color-border-light);
+    --border-strong: var(--color-border-light-strong);
+  }
+
+  .dark {
+    /* Aplicando tema escuro */
+    --bg: var(--color-bg-dark);
+    --bg-alt: var(--color-bg-dark-alt);
+    --surface: var(--color-bg-dark-surface);
+    --text-primary: var(--color-text-dark-primary);
+    --text-secondary: var(--color-text-dark-secondary);
+    --text-muted: var(--color-text-dark-muted);
+    --border: var(--color-border-dark);
+    --border-strong: var(--color-border-dark-strong);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 100%);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+    line-height: 1.6;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar ultra moderna */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-eco-primary), var(--color-ocean));
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--color-eco-primary-dark), var(--color-ocean-dark));
+    transform: scale(1.2);
+  }
+
+  /* Seleção de texto personalizada */
+  ::selection {
+    background: var(--color-eco-primary);
+    color: white;
+  }
+}
+
+@layer components {
+
+  /* === EFEITOS VISUAIS MODERNOS === */
+  .glass-effect {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .glass-effect {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* === BOTÕES ECOLÓGICOS MODERNOS === */
+  .eco-button {
+    background: linear-gradient(135deg, var(--color-eco-primary), var(--color-eco-primary-dark));
+    color: white;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 4px 15px rgba(16, 185, 129, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(0);
+  }
+
+  .eco-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .eco-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 25px rgba(16, 185, 129, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .eco-button:hover::before {
+    left: 100%;
+  }
+
+  .eco-button:active {
+    transform: translateY(0);
+  }
+
+  /* === BOTÃO SECUNDÁRIO === */
+  .eco-button-secondary {
+    background: transparent;
+    color: var(--color-eco-primary);
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border: 2px solid var(--color-eco-primary);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .eco-button-secondary:hover {
+    background: var(--color-eco-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  }
+
+  /* === BADGES DE RECOMPENSA === */
+  .reward-badge {
+    background: linear-gradient(135deg, var(--color-energy), var(--color-energy-dark));
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+    animation: pulse-eco 2s infinite;
+  }
+
+  .reward-badge-success {
+    background: linear-gradient(135deg, var(--color-eco-primary), var(--color-eco-primary-dark));
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  }
+
+  /* === CARDS MODERNOS === */
+  .material-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 1px 20px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .material-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-eco-primary), var(--color-ocean), var(--color-energy));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .material-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.1),
+      0 4px 20px rgba(0, 0, 0, 0.05);
+    border-color: var(--color-eco-primary);
+  }
+
+  .material-card:hover::before {
+    opacity: 1;
+  }
+
+  /* === ÍCONES DE MATERIAIS MODERNOS === */
+  .material-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .material-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  .material-icon:hover::before {
+    width: 100%;
+    height: 100%;
+  }
+
+  .material-plastic {
+    background: linear-gradient(135deg, var(--material-plastic), #2563EB);
+  }
+
+  .material-glass {
+    background: linear-gradient(135deg, var(--material-glass), #0891B2);
+  }
+
+  .material-metal {
+    background: linear-gradient(135deg, var(--material-metal), #475569);
+  }
+
+  .material-paper {
+    background: linear-gradient(135deg, var(--material-paper), #D97706);
+  }
+
+  .material-organic {
+    background: linear-gradient(135deg, var(--material-organic), #16A34A);
+  }
+
+  .material-oil {
+    background: linear-gradient(135deg, var(--material-oil), #7C3AED);
+  }
+
+  .material-battery {
+    background: linear-gradient(135deg, var(--material-battery), #DC2626);
+  }
+
+  .material-electronic {
+    background: linear-gradient(135deg, var(--material-electronic), #4F46E5);
+  }
+
+  /* === ESTADOS DE FOCO ACESSÍVEIS === */
+  .focus-ring {
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .focus-ring:focus-visible {
+    outline: 3px solid var(--color-eco-primary);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* === ANIMAÇÕES PERSONALIZADAS === */
+  .animate-fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* === GRADIENTES PRONTOS === */
+  .gradient-eco {
+    background: linear-gradient(135deg, var(--color-eco-primary), var(--color-ocean));
+  }
+
+  .gradient-energy {
+    background: linear-gradient(135deg, var(--color-energy), var(--color-energy-dark));
+  }
+
+  .gradient-surface {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg-alt) 100%);
+  }
+
+  /* === UTILITÁRIOS MODERNOS === */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-eco-primary), var(--color-ocean));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    /* Melhora legibilidade de números grandes */
+  }
+
+  /* Animação de brilho para números */
+  @keyframes number-shine {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-number-shine {
+    background: linear-gradient(90deg,
+        var(--color-eco-primary) 25%,
+        var(--color-ocean) 50%,
+        var(--color-energy) 75%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: number-shine 3s ease-in-out infinite;
+  }
+
+  .shadow-eco {
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15);
+  }
+
+  .shadow-energy {
+    box-shadow: 0 10px 40px rgba(245, 158, 11, 0.15);
+  }
+}
