@@ -146,3 +146,115 @@ $RECYCLE.BIN/
 .directory
 .Trash-*
 .nfs*
+
+# ===== ADIÇÕES SUGERIDAS =====
+
+# Tailwind CSS
+.tailwindcss-cache
+
+# PostCSS
+.postcss-cache
+
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# Jest
+jest.config.local.js
+coverage/
+__tests__/__snapshots__/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# E2E tests
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# React Hot Reload
+.react-hot-loader
+
+# Bundle analysis
+bundlestats.html
+bundle-report.html
+stats.json
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Lock files (escolha um)
+package-lock.json
+
+# Cache folders
+.cache/
+.sass-cache/
+.webpack-cache/
+
+# Development databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.backup
+*.bak
+*.orig
+
+# Patches
+*.patch
+*.diff
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Documentation build
+docs/build/
+docs/.docusaurus/
+
+# Analytics
+.analytics/
+
+# Generated assets (se aplicável)
+src/assets/generated/
+public/generated/
+
+# Environment specific
+.env.staging
+.env.production.local
+.env.development.local
+
+# IDE specific
+.history/
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# Sentry
+.sentryclirc
+
+# Certificates
+*.pem
+*.key
+*.crt
+*.csr
+
+# API keys and secrets
+secrets.json
+api-keys.json
+
+# Local development
+local.json
+dev.json
