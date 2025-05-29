@@ -1,5 +1,6 @@
-import { Recycle, Droplets, Zap, FileText, Leaf, Battery, Laptop, Package } from 'lucide-react'
+import { Recycle, Droplets, Coins, Receipt, Anvil, FileText, Leaf, Battery, Laptop, Package, Zap, RefreshCcw } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface Material {
     name: string
@@ -76,6 +77,7 @@ const useCountUp = (end: number, duration = 2000, isVisible = false) => {
 }
 
 const MaterialsSection = () => {
+    const navigate = useNavigate()
     const { ref: calculatorRef, isVisible } = useIntersectionObserver(0.3)
 
     // Values para count-up
@@ -100,7 +102,7 @@ const MaterialsSection = () => {
         },
         {
             name: 'Metais',
-            icon: <Zap className="w-8 h-8" />,
+            icon: <Anvil className="w-8 h-8" />,
             points: '3 pts/kg',
             description: 'Latas de alumínio, ferro, aço',
             color: 'from-orange-500 to-red-600'
@@ -156,7 +158,7 @@ const MaterialsSection = () => {
                 </div>
 
                 {/* Materials Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 text-center md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {materials.map((material, index) => (
                         <div
                             key={index}
@@ -208,7 +210,7 @@ const MaterialsSection = () => {
                                     value: pointsCount,
                                     suffix: "+",
                                     label: "Pontos médios/mês",
-                                    icon: <Recycle className="w-6 h-6" />,
+                                    icon: <Coins className="w-6 h-6" />,
                                     color: "from-green-500 to-emerald-600"
                                 },
                                 {
@@ -216,7 +218,7 @@ const MaterialsSection = () => {
                                     prefix: "R$ ",
                                     suffix: "+",
                                     label: "Em recompensas",
-                                    icon: <Zap className="w-6 h-6" />,
+                                    icon: <Receipt className="w-6 h-6" />,
                                     color: "from-blue-500 to-cyan-600"
                                 },
                                 {
@@ -268,7 +270,7 @@ const MaterialsSection = () => {
                             {
                                 title: "Recicle Regularmente",
                                 description: "Usuários frequentes ganham bônus",
-                                icon: <Zap className="w-6 h-6" />,
+                                icon: <RefreshCcw className="w-6 h-6" />,
                                 color: "from-purple-500 to-pink-600"
                             }
                         ].map((tip, index) => (
@@ -289,11 +291,14 @@ const MaterialsSection = () => {
 
                 {/* Call to Action */}
                 <div className="text-center mt-16">
-                    <div className="inline-flex items-center justify-center space-x-3 px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="inline-flex cursor-pointer items-center justify-center space-x-3 px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                    >
                         <Recycle className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
                         <span className="font-semibold">Comece a pontuar agora</span>
                         <Zap className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    </div>
+                    </button>
                 </div>
             </div>
         </section>

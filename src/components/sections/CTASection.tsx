@@ -22,7 +22,7 @@ const CTASection = () => {
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                         <button
-                            onClick={() => navigate('/register')}
+                            onClick={() => navigate('/app')}
                             className="group relative px-8 py-4 rounded-xl text-lg font-semibold bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500/20"
                         >
                             {/* Background glow */}

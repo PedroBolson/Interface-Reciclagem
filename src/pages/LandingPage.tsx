@@ -28,8 +28,10 @@ const LandingPage = ({ darkMode, toggleDarkMode }: LandingPageProps) => {
             <section id="materials">
                 <MaterialsSection />
             </section>
-            <CTASection />
-            <Footer id="contact" />
+            <section id="contact">
+                <CTASection />
+            </section>
+            <Footer />
         </div>
     )
 }

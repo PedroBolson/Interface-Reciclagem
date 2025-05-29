@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
+import AppDownloadPage from './pages/AppDownloadPage'
+import PartnerPage from './pages/PartnerPage'
 import './index.css'
 
 function App() {
@@ -82,6 +84,14 @@ function App() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/app"
+            element={<AppDownloadPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          />
+          <Route
+            path="/partner"
+            element={<PartnerPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          />
         </Routes>
       </div>
     </Router>

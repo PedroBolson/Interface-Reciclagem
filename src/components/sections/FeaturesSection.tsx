@@ -1,4 +1,5 @@
 import { Target, Smartphone, Gift, Globe, MapPin, Bell } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface Feature {
     icon: React.ReactNode
@@ -8,6 +9,8 @@ interface Feature {
 }
 
 const FeaturesSection = () => {
+    const navigate = useNavigate()
+
     const features: Feature[] = [
         {
             icon: <Target className="w-8 h-8" />,
@@ -61,7 +64,7 @@ const FeaturesSection = () => {
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 text-center md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((feature, index) => (
                         <div
                             key={index}
@@ -100,7 +103,7 @@ const FeaturesSection = () => {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 relative">
                         {[
                             {
                                 step: "01",
@@ -124,7 +127,7 @@ const FeaturesSection = () => {
                                 color: "from-purple-500 to-pink-600"
                             }
                         ].map((item, index) => (
-                            <div key={index} className="text-center group">
+                            <div key={index} className="text-center group relative">
                                 {/* Step Number */}
                                 <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br ${item.color} text-white text-xl font-bold mb-4 group-hover:scale-110 transition-transform duration-300`}>
                                     {item.step}
@@ -154,11 +157,14 @@ const FeaturesSection = () => {
 
                 {/* Call to Action */}
                 <div className="text-center mt-16">
-                    <div className="inline-flex items-center justify-center space-x-3 px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                    <button
+                        onClick={() => navigate('/register')}
+                        className="inline-flex cursor-pointer items-center justify-center space-x-3 px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                    >
                         <Target className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
                         <span className="font-semibold">Comece a reciclar hoje</span>
                         <Gift className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    </div>
+                    </button>
                 </div>
             </div>
         </section>
