@@ -192,8 +192,8 @@ const MaterialsSection = () => {
                     ))}
                 </div>
 
-                {/* Points Calculator */}
-                <div ref={calculatorRef} className="mt-20">
+                {/* Points Calculator - Desktop Only */}
+                <div ref={calculatorRef} className="mt-20 hidden lg:block">
                     <div className="backdrop-blur-sm rounded-2xl p-8 border border-green-200/60 dark:border-green-700/60">
                         <div className="text-center mb-8">
                             <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-green-700 to-blue-700 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">

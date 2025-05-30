@@ -74,15 +74,15 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
     const RecycleLogo = () => (
         <button
             onClick={scrollToTop}
-            className="group flex items-center space-x-3 transition-all duration-500 hover:scale-105 focus:outline-none"
+            className="group flex items-center space-x-2 md:space-x-3 transition-all duration-500 hover:scale-105 focus:outline-none"
             aria-label="Voltar ao topo"
         >
             {/* Logo Component */}
             <Logo size="md" />
 
-            {/* Texto do logo */}
+            {/* Texto do logo - Responsivo */}
             <div className="hidden sm:block">
-                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-emerald-600 dark:from-green-400 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent group-hover:from-green-500 group-hover:via-blue-500 group-hover:to-emerald-500 transition-all duration-500">
+                <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-emerald-600 dark:from-green-400 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent group-hover:from-green-500 group-hover:via-blue-500 group-hover:to-emerald-500 transition-all duration-500">
                     EcoRecicla
                 </span>
                 <div className="h-0.5 bg-gradient-to-r from-green-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
@@ -105,12 +105,12 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         {/* Logo */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 min-w-0">
                             <RecycleLogo />
                         </div>
 
-                        {/* Desktop Navigation */}
-                        <nav className="hidden md:flex space-x-1">
+                        {/* Desktop Navigation - Agora só aparece em telas grandes (lg+) */}
+                        <nav className="hidden lg:flex space-x-1">
                             {navItems.map((item) => (
                                 <button
                                     key={item.name}
@@ -142,13 +142,13 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                         </nav>
 
                         {/* Auth Buttons + Theme Toggle and Mobile Menu Button */}
-                        <div className="flex items-center space-x-2 sm:space-x-4">
-                            {/* Auth Buttons - Desktop */}
-                            <div className="hidden sm:flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                            {/* Auth Buttons - Apenas desktop grande (xl+) */}
+                            <div className="hidden xl:flex items-center space-x-2">
                                 {/* Login Button */}
                                 <Link
                                     to="/login"
-                                    className="group relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                                    className="group relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                                 >
                                     {/* Background */}
                                     <div className="absolute inset-0 rounded-lg bg-white/10 dark:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm"></div>
@@ -162,10 +162,10 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                                     </div>
                                 </Link>
 
-                                {/* Register Button - MANTÉM INTACTO */}
+                                {/* Register Button */}
                                 <Link
                                     to="/register"
-                                    className="group relative px-4 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                                    className="group relative px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500/20"
                                 >
                                     {/* Background glow */}
                                     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-green-400 to-blue-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
@@ -180,8 +180,8 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
 
                             <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
-                            {/* Mobile menu button */}
-                            <div className="md:hidden">
+                            {/* Mobile/Tablet menu button - Agora aparece até lg */}
+                            <div className="lg:hidden">
                                 <button
                                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                                     className="group relative p-2 rounded-lg transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-500/20"
@@ -239,9 +239,9 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                         </div>
                     </div>
 
-                    {/* Mobile Navigation */}
+                    {/* Mobile/Tablet Navigation - Agora funciona até lg */}
                     {isMenuOpen && (
-                        <div className="md:hidden border-t border-white/20 dark:border-white/10">
+                        <div className="lg:hidden border-t border-white/20 dark:border-white/10">
                             <div className="px-2 pt-2 pb-3 space-y-2 backdrop-blur-xl bg-white/5 dark:bg-black/10">
                                 {/* Navigation Items */}
                                 {navItems.map((item) => (
@@ -266,7 +266,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                                     </button>
                                 ))}
 
-                                {/* Mobile Auth Buttons */}
+                                {/* Mobile/Tablet Auth Buttons */}
                                 <div className="pt-2 space-y-2 border-t border-white/10 dark:border-white/5">
                                     {/* Login Button */}
                                     <Link
@@ -284,7 +284,7 @@ const Header = ({ darkMode, toggleDarkMode }: HeaderProps) => {
                                         </span>
                                     </Link>
 
-                                    {/* Register Button - MANTÉM INTACTO */}
+                                    {/* Register Button */}
                                     <Link
                                         to="/register"
                                         className="group relative w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-base font-medium bg-gradient-to-r from-green-500 to-blue-500 text-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-green-500/20"

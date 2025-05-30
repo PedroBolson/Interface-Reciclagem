@@ -150,7 +150,8 @@ const Footer = ({ id }: { id?: string }) => {
                 {/* Conteúdo principal do footer */}
                 <div className="py-16 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+                        {/* Desktop Layout */}
+                        <div className="hidden lg:grid lg:grid-cols-5 gap-12">
                             {/* Branding Section */}
                             <div className="lg:col-span-2">
                                 <div className="flex items-center gap-3 mb-6">
@@ -219,8 +220,174 @@ const Footer = ({ id }: { id?: string }) => {
                             ))}
                         </div>
 
-                        {/* Newsletter Section - Com Validação e Animação */}
-                        <div className="mt-16 p-6 rounded-2xl bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-200/60 dark:border-green-700/60">
+                        {/* Mobile Layout */}
+                        <div className="lg:hidden space-y-8">
+                            {/* Branding Section */}
+                            <div>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Logo
+                                        size="md"
+                                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                    />
+                                    <div>
+                                        <span className="text-2xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-emerald-600 dark:from-green-400 dark:via-blue-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                            EcoRecicla
+                                        </span>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            Seu destino sustentável
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                                    Transformando reciclagem em oportunidades reais para um futuro sustentável.
+                                    Conectamos pessoas conscientes com recompensas que fazem a diferença.
+                                </p>
+
+                                {/* Redes sociais */}
+                                <div className="flex items-center space-x-4">
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        Siga-nos:
+                                    </span>
+                                    {socialLinks.map((social, index) => (
+                                        <a
+                                            key={index}
+                                            href={social.href}
+                                            className={`p-2 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:scale-110 hover:border-green-300 dark:hover:border-green-600 ${social.color}`}
+                                            aria-label={social.name}
+                                            target='_blank'
+                                        >
+                                            {social.icon}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Newsletter Section - Mobile */}
+                            <div className="p-6 rounded-2xl bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-200/60 dark:border-green-700/60">
+                                <div className="text-center mb-6">
+                                    <h4 className="text-xl font-bold mb-2 bg-gradient-to-r from-green-700 to-blue-700 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">
+                                        Mantenha-se Atualizado
+                                    </h4>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                        Receba novidades sobre sustentabilidade e novas recompensas
+                                    </p>
+                                </div>
+
+                                <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+                                    <div className="space-y-3">
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={handleEmailChange}
+                                            onBlur={handleEmailBlur}
+                                            placeholder="Seu melhor e-mail"
+                                            disabled={isSubmitting || showSuccess}
+                                            className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed ${emailError && isTouched
+                                                ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
+                                                : showSuccess
+                                                    ? 'border-green-300 dark:border-green-600 focus:ring-green-500'
+                                                    : 'border-gray-300 dark:border-gray-600 focus:ring-green-500'
+                                                }`}
+                                        />
+
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting || showSuccess || (!!emailError && isTouched)}
+                                            className={`relative overflow-hidden w-full px-6 py-3 rounded-lg font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500/20 ${showSuccess
+                                                ? 'bg-gradient-to-r from-green-400 to-emerald-400 cursor-default'
+                                                : isSubmitting
+                                                    ? 'bg-gradient-to-r from-green-400 to-blue-400 cursor-not-allowed'
+                                                    : 'bg-gradient-to-r from-green-500 to-blue-500 hover:shadow-lg hover:scale-105'
+                                                } text-white`}
+                                        >
+                                            {/* Background animation */}
+                                            <div className={`absolute inset-0 bg-gradient-to-r from-green-400 to-blue-400 transform transition-transform duration-1000 ${isSubmitting ? 'translate-x-0' : 'translate-x-full'
+                                                }`}></div>
+
+                                            {/* Content com animação */}
+                                            <div className="relative flex items-center justify-center w-full h-full">
+                                                {/* Estado normal */}
+                                                {!isSubmitting && !showSuccess && (
+                                                    <div className="flex items-center space-x-2">
+                                                        <Send className="w-4 h-4" />
+                                                        <span>Inscrever-se</span>
+                                                    </div>
+                                                )}
+
+                                                {/* Estado enviando */}
+                                                {isSubmitting && (
+                                                    <div className="relative flex items-center justify-center w-full">
+                                                        {/* Ícone voando */}
+                                                        <Send className="absolute w-4 h-4 z-20 transition-all duration-1000 ease-in-out transform animate-pulse"
+                                                            style={{
+                                                                left: isSubmitting ? '1rem' : '-2rem',
+                                                                animation: isSubmitting ? 'flyAcross 1s ease-in-out forwards' : 'none'
+                                                            }} />
+
+                                                        <span className="text-sm">
+                                                            Enviando...
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {/* Estado sucesso */}
+                                                {showSuccess && (
+                                                    <div className="flex items-center space-x-2 animate-in fade-in duration-500">
+                                                        <CheckCircle className="w-4 h-4 animate-pulse" />
+                                                        <span className="text-sm">Inscrito!</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </button>
+                                    </div>
+
+                                    {/* Error Message */}
+                                    {emailError && isTouched && (
+                                        <ErrorMessage error={emailError} />
+                                    )}
+
+                                    {/* Success Message */}
+                                    {showSuccess && (
+                                        <div className="flex items-center space-x-2 mt-2 text-green-600 dark:text-green-400 text-sm animate-in slide-in-from-bottom-1 duration-300">
+                                            <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                                            <span>Obrigado! Você receberá nossas novidades em breve 🌱</span>
+                                        </div>
+                                    )}
+                                </form>
+                            </div>
+
+                            {/* Links Sections - Mobile */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                                {footerSections.map((section, index) => (
+                                    <div key={index}>
+                                        <h4 className="font-bold text-lg mb-4 bg-gradient-to-r from-green-700 to-blue-700 dark:from-green-400 dark:to-blue-400 bg-clip-text text-transparent">
+                                            {section.title}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {section.links.map((link, linkIndex) => (
+                                                <li key={linkIndex}>
+                                                    <a
+                                                        href={link.href}
+                                                        className="group flex items-center space-x-3 text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300"
+                                                    >
+                                                        <span className="text-green-500 group-hover:scale-110 transition-transform duration-300">
+                                                            {link.icon}
+                                                        </span>
+                                                        <span className="group-hover:translate-x-1 transition-transform duration-300">
+                                                            {link.label}
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Newsletter Section - Desktop */}
+                        <div className="hidden lg:block mt-16 p-6 rounded-2xl bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-200/60 dark:border-green-700/60">
                             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                                 {/* Texto à esquerda */}
                                 <div className="flex-1">
