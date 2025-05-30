@@ -528,7 +528,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                     <button
                                         onClick={() => setCurrentStep(3)}
                                         disabled={!formData.weight}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="flex-1 cursor-pointer px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Continuar
                                     </button>

@@ -18,16 +18,17 @@ export interface UserData {
     lastName: string
     cpf: string
     birthDate: string
-    phone?: string
     cep: string
     address: string
     addressNumber: string
     city: string
     state: string
-    neighborhood: string
     acceptedTerms: boolean
-    createdAt: Date
-    updatedAt: Date
+    createdAt: any
+    updatedAt: any
+    // Novo campo para o presente de boas-vindas
+    welcomeGiftClaimed?: boolean
+    welcomeGiftClaimedAt?: any
 }
 
 // Interface para o balanço do usuário

@@ -4,6 +4,7 @@ import { useUserBalance } from '../hooks/useUserBalance'
 import { useUserTransactions } from '../hooks/useUserTransactions'
 import { useRecycling } from '../hooks/useRecycling'
 import { useRewards } from '../hooks/useRewards'
+import { useToastContext } from '../components/ui/ToastProvider' // Adicionar import
 import type { UserData } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -30,6 +31,7 @@ import ThemeToggle from '../components/ui/ThemeToggle'
 import Logo from '../components/ui/Logo'
 import TransactionHistoryFull from '../components/TransactionHistoryFull'
 import RecyclingModal from '../components/RecyclingModal'
+import WelcomeGiftButton from '../components/WelcomeGiftButton';
 
 interface DashboardPageProps {
     darkMode: boolean
@@ -175,16 +177,16 @@ const LevelBadge = ({ totalEarned, size = 'md', showProgress = false }: LevelBad
 
 const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const { user, signOut, getUserData } = useAuth()
-    const { balance, loading: balanceLoading } = useUserBalance() // Remove refreshBalance
-    const { transactions, loading: transactionsLoading } = useUserTransactions(10) // Remove refresh
-    const { addBonus, isProcessing: isAddingPoints } = useRecycling()
+    const { balance, loading: balanceLoading } = useUserBalance()
+    const { transactions, loading: transactionsLoading } = useUserTransactions(10)
+    const { } = useRecycling()
     const { spendPoints, isProcessing: isSpendingPoints } = useRewards()
+    const { showSuccess, showError, showWarning } = useToastContext() // Usar o hook de toast
 
     const [userData, setUserData] = useState<UserData | null>(null)
     const [loading, setLoading] = useState(true)
     const [showTransactionHistory, setShowTransactionHistory] = useState(false)
     const [showRecyclingModal, setShowRecyclingModal] = useState(false)
-    const [successMessage, setSuccessMessage] = useState<string | null>(null)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -206,31 +208,11 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
         }
     }
 
-    // Função para teste rápido de reciclagem (sem refresh manual)
-    const handleQuickRecycle = async () => {
-        try {
-            const result = await addBonus({
-                points: 10,
-                reason: 'Bônus de teste do dashboard'
-            }) as { success: boolean; points?: number; error?: string }
-
-            if (result.success) {
-                setSuccessMessage(`✅ Sucesso! Você ganhou ${result.points} pontos!`)
-                setTimeout(() => setSuccessMessage(null), 3000)
-                // Não precisa de refresh - dados atualizam automaticamente!
-            } else {
-                alert(`Erro: ${result.error}`)
-            }
-        } catch (error: any) {
-            alert(`Erro: ${error.message}`)
-        }
-    }
-
-    // Função para teste rápido de recompensa (sem refresh manual)
+    // Função para teste rápido de recompensa (usando toast)
     const handleQuickReward = async () => {
         if (balance.currentBalance < 100) {
-            alert('Você precisa de pelo menos 100 pontos para esta recompensa')
-            return
+            showWarning('Você precisa de pelo menos 100 pontos para esta recompensa');
+            return;
         }
 
         try {
@@ -241,22 +223,24 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
             }) as { success: boolean; error?: string }
 
             if (result.success) {
-                setSuccessMessage('🎉 Parabéns! Você resgatou um voucher de R$ 10!')
-                setTimeout(() => setSuccessMessage(null), 3000)
-                // Não precisa de refresh - dados atualizam automaticamente!
+                showSuccess(
+                    '🎉 Parabéns! Você resgatou um voucher de R$ 10!',
+                    6000 // 6 segundos
+                );
             } else {
-                alert(`Erro: ${result.error}`)
+                showError(`Erro: ${result.error}`);
             }
         } catch (error: any) {
-            alert(`Erro: ${error.message}`)
+            showError(`Erro: ${error.message}`);
         }
     }
 
-    // Callback para quando reciclagem é bem-sucedida (sem refresh manual)
+    // Callback para quando reciclagem é bem-sucedida (usando toast)
     const handleRecyclingSuccess = (points: number) => {
-        setSuccessMessage(`🎉 Parabéns! Você ganhou ${points} pontos com sua reciclagem!`)
-        setTimeout(() => setSuccessMessage(null), 5000)
-        // Não precisa de refresh - dados atualizam automaticamente!
+        showSuccess(
+            `🌱 Parabéns! Você ganhou ${points.toFixed(2)} pontos com sua reciclagem!`,
+            7000 // 7 segundos para reciclagem - mais importante
+        );
     }
 
     if (loading || balanceLoading) {
@@ -311,12 +295,12 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
             : 'bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50'
             }`}>
 
-            {/* Success Message */}
-            {successMessage && (
+            {/* Remover a mensagem de sucesso antiga */}
+            {/* {successMessage && (
                 <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-300">
                     {successMessage}
                 </div>
-            )}
+            )} */}
 
             {/* Header */}
             <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/20 dark:border-white/10">
@@ -333,13 +317,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <button className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                            <button className="p-2 cursor-pointer rounded-lg hover:bg-white/10 transition-colors duration-200">
                                 <Bell className="w-5 h-5" />
                             </button>
                             <ThemeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
                             <button
                                 onClick={handleSignOut}
-                                className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors duration-200 text-red-600 dark:text-red-400"
+                                className="flex cursor-pointer items-center space-x-2 px-4 py-2 rounded-lg hover:scale-105 transition-colors duration-200 text-red-600 dark:text-red-400"
                             >
                                 <LogOut className="w-5 h-5" />
                                 <span className="hidden sm:inline">Sair</span>
@@ -561,22 +545,14 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => setShowRecyclingModal(true)}
-                                    className="w-full flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                    className="w-full cursor-pointer flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 >
                                     <Recycle className="w-5 h-5" />
                                     <span className="font-semibold">Nova Reciclagem</span>
                                 </button>
 
-                                <button
-                                    onClick={handleQuickRecycle}
-                                    disabled={isAddingPoints}
-                                    className="w-full flex items-center space-x-3 px-4 py-3 bg-green-500/20 dark:bg-green-900/30 rounded-lg hover:bg-green-500/30 dark:hover:bg-green-800/40 transition-colors duration-200 disabled:opacity-50"
-                                >
-                                    <Recycle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                                    <span className="text-green-700 dark:text-green-300">
-                                        {isAddingPoints ? 'Processando...' : 'Teste Rápido (+10 pts)'}
-                                    </span>
-                                </button>
+                                {/* Substituir o botão de teste pelo presente de boas-vindas */}
+                                <WelcomeGiftButton />
 
                                 <button
                                     onClick={handleQuickReward}

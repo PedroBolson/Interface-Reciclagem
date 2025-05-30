@@ -465,3 +465,183 @@ export const getUserStats = onCall(async (request) => {
         throw new HttpsError('internal', 'Erro interno do servidor');
     }
 });
+
+// Função específica para presente de boas-vindas
+export const claimWelcomeGift = onCall(async (request) => {
+    if (!request.auth) {
+        throw new HttpsError('unauthenticated', 'Usuário deve estar autenticado');
+    }
+
+    const uid = request.auth.uid;
+
+    try {
+        // Usar transação para garantir que só pode ser usado uma vez
+        const result = await db.runTransaction(async (transaction) => {
+            // Verificar se usuário já resgatou o presente
+            const userRef = db.collection('users').doc(uid);
+            const userDoc = await transaction.get(userRef);
+
+            if (!userDoc.exists) {
+                throw new HttpsError('not-found', 'Usuário não encontrado');
+            }
+
+            const userData = userDoc.data();
+
+            // Verificar se já foi resgatado
+            if (userData?.welcomeGiftClaimed === true) {
+                throw new HttpsError('already-exists', 'Presente de boas-vindas já foi resgatado');
+            }
+
+            // Verificar se conta é nova (menos de 7 dias) - opcional
+            const accountAge = Date.now() - userData?.createdAt?.toMillis();
+            const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+
+            if (accountAge > sevenDaysInMs) {
+                throw new HttpsError('failed-precondition', 'Presente de boas-vindas expirou (válido por 7 dias)');
+            }
+
+            // Buscar saldo atual
+            const balanceRef = db.collection('balances').doc(uid);
+            const balanceDoc = await transaction.get(balanceRef);
+
+            let currentBalance = 0;
+            let totalEarned = 0;
+            let recyclingCount = 0;
+
+            if (balanceDoc.exists) {
+                const balanceData = balanceDoc.data();
+                currentBalance = normalizeNumber(balanceData?.currentBalance || 0);
+                totalEarned = normalizeNumber(balanceData?.totalEarned || 0);
+                recyclingCount = parseInt(balanceData?.recyclingCount || 0);
+            }
+
+            // Presente de boas-vindas: 50 pontos
+            const welcomeGiftPoints = 50;
+            const newCurrentBalance = normalizeNumber(currentBalance + welcomeGiftPoints);
+            const newTotalEarned = normalizeNumber(totalEarned + welcomeGiftPoints);
+
+            // Marcar presente como resgatado no perfil do usuário
+            transaction.update(userRef, {
+                welcomeGiftClaimed: true,
+                welcomeGiftClaimedAt: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp()
+            });
+
+            // Atualizar saldo
+            const balanceUpdate = {
+                uid,
+                currentBalance: newCurrentBalance,
+                totalEarned: newTotalEarned,
+                recyclingCount,
+                totalSpent: balanceDoc.exists ? (balanceDoc.data()?.totalSpent || 0) : 0,
+                lastRecycling: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp(),
+                ...(balanceDoc.exists ? {} : { createdAt: FieldValue.serverTimestamp() })
+            };
+
+            transaction.set(balanceRef, balanceUpdate, { merge: true });
+
+            // Adicionar transação de presente
+            const transactionRef = db.collection('transactions').doc();
+            const transactionData = {
+                uid: uid,
+                type: 'welcome_gift',
+                status: 'confirmed',
+                points: welcomeGiftPoints,
+                description: `🎁 Presente de boas-vindas ao EcoRecicla!`,
+                timestamp: FieldValue.serverTimestamp(),
+                createdAt: FieldValue.serverTimestamp(),
+                // Metadados específicos do presente
+                giftType: 'welcome',
+                giftValue: welcomeGiftPoints,
+                accountCreationDate: userData?.createdAt
+            };
+
+            transaction.set(transactionRef, transactionData);
+
+            return {
+                transactionId: transactionRef.id,
+                newBalance: newCurrentBalance,
+                pointsAdded: welcomeGiftPoints
+            };
+        });
+
+        console.log('🎁 Presente de boas-vindas resgatado:', result);
+
+        return {
+            success: true,
+            points: result.pointsAdded,
+            newBalance: result.newBalance,
+            transactionId: result.transactionId,
+            message: `🎁 Presente de boas-vindas! Você ganhou ${result.pointsAdded} pontos!`
+        };
+
+    } catch (error) {
+        console.error('❌ Erro ao resgatar presente de boas-vindas:', error);
+
+        if (error instanceof HttpsError) {
+            throw error;
+        }
+
+        throw new HttpsError('internal', 'Erro interno do servidor: ' + (error as Error).message);
+    }
+});
+
+// Função para verificar elegibilidade do presente
+export const checkWelcomeGiftEligibility = onCall(async (request) => {
+    if (!request.auth) {
+        throw new HttpsError('unauthenticated', 'Usuário deve estar autenticado');
+    }
+
+    const uid = request.auth.uid;
+
+    try {
+        const userRef = db.collection('users').doc(uid);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return { eligible: false, reason: 'user_not_found' };
+        }
+
+        const userData = userDoc.data();
+
+        if (!userData) {
+            return { eligible: false, reason: 'user_data_not_found' };
+        }
+
+        // Verificar se já foi resgatado
+        if (userData.welcomeGiftClaimed === true) {
+            return {
+                eligible: false,
+                reason: 'already_claimed',
+                claimedAt: userData.welcomeGiftClaimedAt
+            };
+        }
+
+        // Verificar idade da conta (7 dias)
+        const accountAge = Date.now() - userData.createdAt?.toMillis();
+        const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+
+        if (accountAge > sevenDaysInMs) {
+            return {
+                eligible: false,
+                reason: 'expired',
+                accountCreatedAt: userData.createdAt,
+                daysLeft: 0
+            };
+        }
+
+        const daysLeft = Math.ceil((sevenDaysInMs - accountAge) / (24 * 60 * 60 * 1000));
+
+        return {
+            eligible: true,
+            daysLeft,
+            accountCreatedAt: userData.createdAt,
+            giftValue: 50
+        };
+
+    } catch (error) {
+        console.error('❌ Erro ao verificar elegibilidade:', error);
+        throw new HttpsError('internal', 'Erro interno do servidor');
+    }
+});
