@@ -89,56 +89,56 @@ const MaterialsSection = () => {
         {
             name: 'Plásticos',
             icon: <Package className="w-8 h-8" />,
-            points: '2 pts/kg',
+            points: '5 pts/kg',
             description: 'Garrafas PET, embalagens, sacolas',
             color: 'from-blue-500 to-cyan-600'
         },
         {
             name: 'Vidros',
             icon: <Recycle className="w-8 h-8" />,
-            points: '1.5 pts/kg',
+            points: '4 pts/kg',
             description: 'Garrafas, potes, frascos diversos',
             color: 'from-emerald-500 to-teal-600'
         },
         {
             name: 'Metais',
             icon: <Anvil className="w-8 h-8" />,
-            points: '3 pts/kg',
+            points: '8 pts/kg',
             description: 'Latas de alumínio, ferro, aço',
             color: 'from-orange-500 to-red-600'
         },
         {
             name: 'Papel',
             icon: <FileText className="w-8 h-8" />,
-            points: '1 pt/kg',
+            points: '3 pts/kg',
             description: 'Jornais, revistas, papelão',
             color: 'from-amber-500 to-yellow-600'
         },
         {
             name: 'Orgânicos',
             icon: <Leaf className="w-8 h-8" />,
-            points: '0.5 pts/kg',
+            points: '2 pts/kg',
             description: 'Restos de comida, cascas, folhas',
             color: 'from-green-500 to-emerald-600'
         },
         {
             name: 'Óleo',
             icon: <Droplets className="w-8 h-8" />,
-            points: '5 pts/L',
+            points: '8 pts/L',
             description: 'Óleo de cozinha usado',
             color: 'from-yellow-500 to-orange-600'
         },
         {
             name: 'Baterias',
             icon: <Battery className="w-8 h-8" />,
-            points: '10 pts/un',
+            points: '17 pts/un',
             description: 'Pilhas, baterias de celular',
             color: 'from-purple-500 to-indigo-600'
         },
         {
             name: 'Eletrônicos',
             icon: <Laptop className="w-8 h-8" />,
-            points: '15 pts/kg',
+            points: '20 pts/kg',
             description: 'Celulares, computadores, TVs',
             color: 'from-slate-500 to-gray-600'
         }
