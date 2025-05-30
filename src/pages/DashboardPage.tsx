@@ -3,8 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useUserBalance } from '../hooks/useUserBalance'
 import { useUserTransactions } from '../hooks/useUserTransactions'
 import { useRecycling } from '../hooks/useRecycling'
-import { useRewards } from '../hooks/useRewards'
-import { useToastContext } from '../components/ui/ToastProvider' // Adicionar import
+import { useToastContext } from '../components/ui/ToastProvider'
 import type { UserData } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -31,7 +30,8 @@ import ThemeToggle from '../components/ui/ThemeToggle'
 import Logo from '../components/ui/Logo'
 import TransactionHistoryFull from '../components/TransactionHistoryFull'
 import RecyclingModal from '../components/RecyclingModal'
-import WelcomeGiftButton from '../components/WelcomeGiftButton';
+import WelcomeGiftButton from '../components/WelcomeGiftButton'
+import RewardsModal from '../components/RewardsModal' // Adicionar import
 
 interface DashboardPageProps {
     darkMode: boolean
@@ -180,13 +180,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const { balance, loading: balanceLoading } = useUserBalance()
     const { transactions, loading: transactionsLoading } = useUserTransactions(10)
     const { } = useRecycling()
-    const { spendPoints, isProcessing: isSpendingPoints } = useRewards()
-    const { showSuccess, showError, showWarning } = useToastContext() // Usar o hook de toast
+    const { showSuccess } = useToastContext()
 
     const [userData, setUserData] = useState<UserData | null>(null)
     const [loading, setLoading] = useState(true)
     const [showTransactionHistory, setShowTransactionHistory] = useState(false)
     const [showRecyclingModal, setShowRecyclingModal] = useState(false)
+    const [showRewardsModal, setShowRewardsModal] = useState(false) // Adicionar estado
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -208,34 +208,8 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
         }
     }
 
-    // Função para teste rápido de recompensa (usando toast)
-    const handleQuickReward = async () => {
-        if (balance.currentBalance < 100) {
-            showWarning('Você precisa de pelo menos 100 pontos para esta recompensa');
-            return;
-        }
 
-        try {
-            const result = await spendPoints({
-                points: 100,
-                rewardName: 'Voucher R$ 10',
-                rewardCategory: 'Alimentação'
-            }) as { success: boolean; error?: string }
-
-            if (result.success) {
-                showSuccess(
-                    '🎉 Parabéns! Você resgatou um voucher de R$ 10!',
-                    6000 // 6 segundos
-                );
-            } else {
-                showError(`Erro: ${result.error}`);
-            }
-        } catch (error: any) {
-            showError(`Erro: ${error.message}`);
-        }
-    }
-
-    // Callback para quando reciclagem é bem-sucedida (usando toast)
+    // Callback para quando reciclagem é bem-sucedida
     const handleRecyclingSuccess = (points: number) => {
         showSuccess(
             `🌱 Parabéns! Você ganhou ${points.toFixed(2)} pontos com sua reciclagem!`,
@@ -551,18 +525,15 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                     <span className="font-semibold">Nova Reciclagem</span>
                                 </button>
 
-                                {/* Substituir o botão de teste pelo presente de boas-vindas */}
                                 <WelcomeGiftButton />
 
+                                {/* Substituir o botão antigo pelo novo modal */}
                                 <button
-                                    onClick={handleQuickReward}
-                                    disabled={isSpendingPoints || balance.currentBalance < 100}
-                                    className="w-full flex items-center space-x-3 px-4 py-3 bg-purple-500/20 dark:bg-purple-900/30 rounded-lg hover:bg-purple-500/30 dark:hover:bg-purple-800/40 transition-colors duration-200 disabled:opacity-50"
+                                    onClick={() => setShowRewardsModal(true)}
+                                    className="w-full cursor-pointer flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 >
-                                    <Gift className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                    <span className="text-purple-700 dark:text-purple-300">
-                                        {isSpendingPoints ? 'Processando...' : 'Resgatar Voucher (-100 pts)'}
-                                    </span>
+                                    <Gift className="w-5 h-5" />
+                                    <span className="font-semibold">Loja de Recompensas</span>
                                 </button>
                             </div>
                         </div>
@@ -608,11 +579,6 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                 </button>
 
                                 <button className="w-full flex items-center space-x-3 px-4 py-3 bg-white/50 dark:bg-gray-800/50 rounded-lg hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                                    <Gift className="w-5 h-5 text-purple-500" />
-                                    <span>Ver Recompensas</span>
-                                </button>
-
-                                <button className="w-full flex items-center space-x-3 px-4 py-3 bg-white/50 dark:bg-gray-800/50 rounded-lg hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
                                     <Settings className="w-5 h-5 text-gray-500" />
                                     <span>Configurações</span>
                                 </button>
@@ -622,11 +588,18 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 </div>
             </main>
 
-            {/* Recycling Modal */}
+            {/* Modals */}
             <RecyclingModal
                 isOpen={showRecyclingModal}
                 onClose={() => setShowRecyclingModal(false)}
                 onSuccess={handleRecyclingSuccess}
+            />
+
+            <RewardsModal
+                isOpen={showRewardsModal}
+                onClose={() => setShowRewardsModal(false)}
+                currentBalance={balance.currentBalance || 0}
+                darkMode={darkMode}
             />
         </div>
     )

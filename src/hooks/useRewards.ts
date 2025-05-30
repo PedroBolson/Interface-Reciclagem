@@ -6,6 +6,7 @@ interface RewardData {
     points: number;
     rewardName: string;
     rewardCategory: string;
+    rewardId: string;
 }
 
 interface RewardResult {
