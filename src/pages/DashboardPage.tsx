@@ -588,7 +588,6 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 </div>
             </main>
 
-            {/* Modals */}
             <RecyclingModal
                 isOpen={showRecyclingModal}
                 onClose={() => setShowRecyclingModal(false)}
