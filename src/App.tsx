@@ -70,7 +70,7 @@ function App() {
               element={<PartnerPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
             />
             <Route
-              path="/app-download"
+              path="/app"
               element={<AppDownloadPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
             />
           </Routes>
