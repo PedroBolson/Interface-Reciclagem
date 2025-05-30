@@ -260,36 +260,38 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, userData }) => {
                     </button>
                 </div>
 
-                <div className="flex flex-col lg:flex-row h-[500px]">
+                <div className="flex flex-col lg:flex-row lg:h-[500px]">
                     {/* Real Map */}
                     {cityCenter && randomPoints.length > 0 ? (
-                        <MapContainer
-                            center={[cityCenter.lat, cityCenter.lng]}
-                            zoom={13}
-                            className="flex-1"
-                            key={mapKey} // Usar a chave dinâmica para forçar re-render
-                        >
-                            <TileLayer
-                                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            />
-                            {randomPoints.map((pt, index) => (
-                                <Marker key={`marker-${index}-${mapKey}`} position={[pt.lat, pt.lng]}>
-                                    <Popup>
-                                        <div className="font-semibold">{pt.data.name}</div>
-                                        <div className="text-sm">{pt.data.address}</div>
-                                        <div className="text-sm font-medium text-blue-600">
-                                            {pt.distance.toFixed(1)} km de você
-                                        </div>
-                                        <div className="text-xs text-gray-600 mt-1">
-                                            {pt.data.materials.join(', ')}
-                                        </div>
-                                    </Popup>
-                                </Marker>
-                            ))}
-                        </MapContainer>
+                        <div className="w-full lg:flex-1 h-[300px] lg:h-auto">
+                            <MapContainer
+                                center={[cityCenter.lat, cityCenter.lng]}
+                                zoom={13}
+                                className="w-full h-full"
+                                key={mapKey} // Usar a chave dinâmica para forçar re-render
+                            >
+                                <TileLayer
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                />
+                                {randomPoints.map((pt, index) => (
+                                    <Marker key={`marker-${index}-${mapKey}`} position={[pt.lat, pt.lng]}>
+                                        <Popup>
+                                            <div className="font-semibold">{pt.data.name}</div>
+                                            <div className="text-sm">{pt.data.address}</div>
+                                            <div className="text-sm font-medium text-blue-600">
+                                                {pt.distance.toFixed(1)} km de você
+                                            </div>
+                                            <div className="text-xs text-gray-600 mt-1">
+                                                {pt.data.materials.join(', ')}
+                                            </div>
+                                        </Popup>
+                                    </Marker>
+                                ))}
+                            </MapContainer>
+                        </div>
                     ) : (
-                        <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                        <div className="w-full lg:flex-1 h-[300px] lg:h-auto flex items-center justify-center bg-gray-100 dark:bg-gray-700">
                             <div className="text-center">
                                 <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
                                 <p className="text-gray-600 dark:text-gray-400">Carregando mapa...</p>
@@ -298,7 +300,7 @@ const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose, userData }) => {
                     )}
 
                     {/* Lista de Pontos */}
-                    <div className="lg:w-96 border-l border-gray-200 dark:border-gray-700 overflow-y-auto">
+                    <div className="w-full lg:w-96 lg:border-l border-t lg:border-t-0 border-gray-200 dark:border-gray-700 max-h-[400px] lg:max-h-none overflow-y-auto">
                         <div className="p-4">
                             <h3 className="font-bold text-lg mb-4 text-gray-900 dark:text-white">
                                 Pontos Próximos

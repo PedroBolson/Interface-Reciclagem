@@ -569,7 +569,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 </div>
 
                 {/* Estatísticas principais */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
                     {[
                         {
                             title: 'Saldo Atual',
@@ -600,40 +600,115 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                             suffix: 'kg'
                         }
                     ].map((stat, index) => (
-                        <div key={index} className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                        <div
+                            key={index}
+                            className={`backdrop-blur-sm rounded-2xl p-4 lg:p-6 border border-white/20 dark:border-gray-700/50 shadow-xl ${
+                                // No mobile e tablets (até 1023px), mostrar apenas os dois primeiros cards
+                                index > 1 ? 'hidden lg:block' : ''
+                                }`}
+                        >
                             <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${stat.color} text-white flex items-center justify-center`}>
-                                    {stat.icon}
+                                <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-lg bg-gradient-to-br ${stat.color} text-white flex items-center justify-center`}>
+                                    <div className="w-6 h-6 lg:w-8 lg:h-8">
+                                        {stat.icon}
+                                    </div>
                                 </div>
-                                <TrendingUp className="w-5 h-5 text-green-500" />
+                                <TrendingUp className="w-4 h-4 lg:w-5 lg:h-5 text-green-500" />
                             </div>
-                            <div className="text-2xl font-bold mb-1">
+                            <div className="text-xl lg:text-2xl font-bold mb-1">
                                 {stat.value} {stat.suffix}
                             </div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">
+                            <div className="text-xs lg:text-sm text-gray-600 dark:text-gray-400">
                                 {stat.title}
                             </div>
                         </div>
                     ))}
                 </div>
 
+                {/* Ações no Mobile/Tablet - Logo após as estatísticas */}
+                <div className="lg:hidden mb-8 space-y-6">
+                    {/* Ações Principais Mobile/Tablet */}
+                    <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                        <h3 className="text-xl font-bold mb-4 flex items-center justify-center space-x-2">
+                            <Plus className="w-5 h-5 text-green-500" />
+                            <span>Ações Principais</span>
+                        </h3>
+
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => setShowRecyclingModal(true)}
+                                className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            >
+                                <Recycle className="w-5 h-5" />
+                                <span className="font-semibold">Nova Reciclagem</span>
+                            </button>
+
+                            <WelcomeGiftButton />
+
+                            <button
+                                onClick={() => setShowRewardsModal(true)}
+                                className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                            >
+                                <Gift className="w-5 h-5" />
+                                <span className="font-semibold">Loja de Recompensas</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Ações Rápidas Mobile/Tablet */}
+                    <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                        <h3 className="text-xl font-bold mb-4 flex items-center justify-center space-x-2">
+                            <Zap className="w-5 h-5 text-blue-500" />
+                            <span>Ações Rápidas</span>
+                        </h3>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <button
+                                onClick={() => setShowMapModal(true)}
+                                className="cursor-pointer flex flex-col items-center space-y-2 px-4 py-3 rounded-xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                            >
+                                <MapPin className="w-6 h-6 text-blue-500" />
+                                <div className="text-center">
+                                    <div className="font-medium text-sm">Pontos de Coleta</div>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                                        6 locais
+                                    </div>
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => setShowProfileModal(true)}
+                                className="cursor-pointer flex flex-col items-center space-y-2 px-4 py-3 rounded-xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                            >
+                                <Settings className="w-6 h-6 text-gray-500" />
+                                <div className="text-center">
+                                    <div className="font-medium text-sm">Configurações</div>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                                        Perfil
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Conteúdo principal */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Atividades Recentes */}
                     <div className="lg:col-span-2">
-                        <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                        <div className="backdrop-blur-sm rounded-2xl p-4 lg:p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold flex items-center space-x-2">
-                                    <Calendar className="w-6 h-6 text-green-500" />
+                                <h2 className="text-xl lg:text-2xl font-bold flex items-center space-x-2">
+                                    <Calendar className="w-5 h-5 lg:w-6 lg:h-6 text-green-500" />
                                     <span>
                                         {showTransactionHistory ? 'Histórico Completo' : 'Atividades Recentes'}
                                     </span>
                                 </h2>
                                 <button
                                     onClick={() => setShowTransactionHistory(!showTransactionHistory)}
-                                    className="px-4 cursor-pointer py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-sm"
+                                    className="px-3 lg:px-4 cursor-pointer py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-xs lg:text-sm"
                                 >
-                                    {showTransactionHistory ? 'Mostrar Recentes' : 'Ver Histórico Completo'}
+                                    {showTransactionHistory ? 'Recentes' : 'Ver Histórico'}
                                 </button>
                             </div>
 
@@ -718,8 +793,8 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                         </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="space-y-6">
+                    {/* Sidebar - Apenas no Desktop (1024px+) */}
+                    <div className="hidden lg:block space-y-6">
                         {/* Ações Principais */}
                         <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
                             <h3 className="text-xl font-bold mb-4 flex items-center justify-center space-x-2">
