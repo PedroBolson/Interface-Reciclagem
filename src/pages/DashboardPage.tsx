@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { useUserBalance } from '../hooks/useUserBalance'
-import { useUserTransactions } from '../hooks/useUserTransactions'
 import { useRecycling } from '../hooks/useRecycling'
 import { useToastContext } from '../components/ui/ToastProvider'
 import type { UserData } from '../hooks/useAuth'
@@ -31,7 +30,10 @@ import Logo from '../components/ui/Logo'
 import TransactionHistoryFull from '../components/TransactionHistoryFull'
 import RecyclingModal from '../components/RecyclingModal'
 import WelcomeGiftButton from '../components/WelcomeGiftButton'
-import RewardsModal from '../components/RewardsModal' // Adicionar import
+import RewardsModal from '../components/RewardsModal'
+import MapModal from '../components/MapModal'
+import { collection, query, where, orderBy, onSnapshot, limit } from 'firebase/firestore'
+import { db } from '../lib/firebase'
 
 interface DashboardPageProps {
     darkMode: boolean
@@ -178,7 +180,13 @@ const LevelBadge = ({ totalEarned, size = 'md', showProgress = false }: LevelBad
 const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const { user, signOut, getUserData } = useAuth()
     const { balance, loading: balanceLoading } = useUserBalance()
-    const { transactions, loading: transactionsLoading } = useUserTransactions(10)
+
+    // Estados para transações (separar recentes das completas)
+    const [recentTransactions, setRecentTransactions] = useState<any[]>([])
+    const [allTransactions, setAllTransactions] = useState<any[]>([])
+    const [transactionsLoading, setTransactionsLoading] = useState(false)
+    const [allTransactionsLoading, setAllTransactionsLoading] = useState(false)
+
     const { } = useRecycling()
     const { showSuccess } = useToastContext()
 
@@ -186,7 +194,8 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const [loading, setLoading] = useState(true)
     const [showTransactionHistory, setShowTransactionHistory] = useState(false)
     const [showRecyclingModal, setShowRecyclingModal] = useState(false)
-    const [showRewardsModal, setShowRewardsModal] = useState(false) // Adicionar estado
+    const [showRewardsModal, setShowRewardsModal] = useState(false)
+    const [showMapModal, setShowMapModal] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -208,44 +217,110 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
         }
     }
 
-
     // Callback para quando reciclagem é bem-sucedida
     const handleRecyclingSuccess = (points: number) => {
         showSuccess(
             `🌱 Parabéns! Você ganhou ${points.toFixed(2)} pontos com sua reciclagem!`,
-            7000 // 7 segundos para reciclagem - mais importante
+            7000
         );
     }
 
-    if (loading || balanceLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 dark:from-gray-900 dark:via-slate-900 dark:to-emerald-900">
-                <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-lg">Carregando seus dados...</span>
-                </div>
-            </div>
-        )
-    }
+    // useEffect para carregar transações RECENTES
+    useEffect(() => {
+        if (!user) return
 
-    // Estatísticas baseadas nos dados reais das Firebase Functions
+        setTransactionsLoading(true)
+
+        const recentTransactionsQuery = query(
+            collection(db, 'transactions'),
+            where('uid', '==', user.uid),
+            orderBy('timestamp', 'desc'),
+            limit(10)
+        )
+
+        const unsubscribe = onSnapshot(recentTransactionsQuery, (snapshot) => {
+            const transactionsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Array<{
+                id: string;
+                type: string;
+                points: number;
+                timestamp: any;
+                description?: string;
+                material?: string;
+                weight?: number;
+                weightUnit?: string;
+                rewardName?: string;
+                uid: string;
+            }>
+
+            setRecentTransactions(transactionsData)
+            setTransactionsLoading(false)
+        }, (error) => {
+            console.error('❌ Erro ao carregar transações recentes:', error)
+            setTransactionsLoading(false)
+        })
+
+        return () => unsubscribe()
+    }, [user])
+
+    // useEffect para carregar TODAS as transações
+    useEffect(() => {
+        if (!user) return
+
+        setAllTransactionsLoading(true)
+
+        const allTransactionsQuery = query(
+            collection(db, 'transactions'),
+            where('uid', '==', user.uid),
+            orderBy('timestamp', 'desc')
+        )
+
+        const unsubscribe = onSnapshot(allTransactionsQuery, (snapshot) => {
+            const transactionsData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            })) as Array<{
+                id: string;
+                type: string;
+                points: number;
+                timestamp: any;
+                description?: string;
+                material?: string;
+                weight?: number;
+                weightUnit?: string;
+                rewardName?: string;
+                uid: string;
+            }>
+
+            setAllTransactions(transactionsData)
+            setAllTransactionsLoading(false)
+        }, (error) => {
+            console.error('❌ Erro ao carregar todas as transações:', error)
+            setAllTransactionsLoading(false)
+        })
+
+        return () => unsubscribe()
+    }, [user])
+
+    // Calcular estatísticas usando TODAS as transações
     const userStats = {
         totalPoints: balance.currentBalance || 0,
         totalEarned: balance.totalEarned || 0,
         totalSpent: balance.totalSpent || 0,
-        materialsRecycled: transactions.filter(t => t.type === 'recycling').length,
-        co2Saved: transactions.filter(t => t.type === 'recycling').reduce((sum, t) => {
-            // Estimativa: 1kg de material reciclado = 2.5kg CO2 economizado
+        materialsRecycled: allTransactions.filter(t => t.type === 'recycling').length,
+        co2Saved: allTransactions.filter(t => t.type === 'recycling').reduce((sum, t) => {
             const weight = t.weight || 1
             const weightInKg = t.weightUnit === 'g' ? weight / 1000 : weight
-            return sum + (weightInKg * 2.5)
+            return sum + (weightInKg * 1.75)
         }, 0)
     }
 
     const userLevel = getUserLevel(userStats.totalEarned)
 
-    // Estatísticas por material baseadas nas transações reais
-    const materialStats = transactions
+    // Estatísticas por material baseadas em TODAS as transações
+    const materialStats: Record<string, { count: number; totalWeight: number; totalPoints: number }> = allTransactions
         .filter(t => t.type === 'recycling')
         .reduce((acc, t) => {
             const material = t.material || 'Outros'
@@ -263,18 +338,23 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
         .sort((a, b) => b.totalPoints - a.totalPoints)
         .slice(0, 5)
 
+    // Modificar a condição de loading para não bloquear tudo
+    if (loading || balanceLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 dark:from-gray-900 dark:via-slate-900 dark:to-emerald-900">
+                <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-lg">Carregando seus dados...</span>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className={`min-h-screen transition-colors duration-300 ${darkMode
             ? 'bg-gradient-to-br from-gray-900 via-slate-900 to-emerald-900'
             : 'bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50'
             }`}>
-
-            {/* Remover a mensagem de sucesso antiga */}
-            {/* {successMessage && (
-                <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-300">
-                    {successMessage}
-                </div>
-            )} */}
 
             {/* Header */}
             <header className="sticky top-0 z-50 backdrop-blur-xl border-b border-white/20 dark:border-white/10">
@@ -309,7 +389,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Boas-vindas */}
-                <div className="mb-8 ">
+                <div className="mb-8">
                     <div className="backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-gray-700/50 shadow-xl bg-gradient-to-r from-green-500/10 to-blue-500/10">
                         <div className="flex items-center justify-center space-x-4 mb-4">
                             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
@@ -327,7 +407,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                         </div>
 
                         {userData && (
-                            <div className="grid grid-cols-1 text-center md:grid-cols-2 gap-6 mt-6 p-6  rounded-xl">
+                            <div className="grid grid-cols-1 text-center md:grid-cols-2 gap-6 mt-6 p-6 rounded-xl">
                                 <div>
                                     <h3 className="font-semibold mb-2">
                                         Informações da Conta
@@ -344,19 +424,17 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                         Status da Conta
                                     </h3>
                                     <div className="space-y-2 text-sm">
-                                        {/* Nível com ícone e progresso */}
                                         <div className="flex items-center justify-center space-x-2">
                                             <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${userLevel.bgColor}`}>
                                                 <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${userLevel.color} text-white flex items-center justify-center`}>
                                                     {userLevel.icon}
                                                 </div>
-                                                <span className={`font-bold`}>
+                                                <span className="font-bold">
                                                     Nível {userLevel.name}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        {/* Barra de progresso para o próximo nível */}
                                         {userLevel.nextLevel && (
                                             <div className="space-y-1">
                                                 <div className="flex justify-between text-xs">
@@ -374,7 +452,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
 
                                         <div className="space-y-1">
                                             <p><strong>Membro desde:</strong> {formatFirestoreDate(userData.createdAt)}</p>
-                                            <p><strong>Saldo atual:</strong> {userStats.totalPoints} pontos</p>
+                                            <p><strong>Saldo atual:</strong> {userStats.totalPoints.toLocaleString()} pontos</p>
                                         </div>
                                     </div>
                                 </div>
@@ -440,13 +518,15 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-2xl font-bold flex items-center space-x-2">
                                     <Calendar className="w-6 h-6 text-green-500" />
-                                    <span>Atividades Recentes</span>
+                                    <span>
+                                        {showTransactionHistory ? 'Histórico Completo' : 'Atividades Recentes'}
+                                    </span>
                                 </h2>
                                 <button
                                     onClick={() => setShowTransactionHistory(!showTransactionHistory)}
-                                    className="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-sm"
+                                    className="px-4 cursor-pointer py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 text-sm"
                                 >
-                                    {showTransactionHistory ? 'Mostrar Resumo' : 'Ver Histórico Completo'}
+                                    {showTransactionHistory ? 'Mostrar Recentes' : 'Ver Histórico Completo'}
                                 </button>
                             </div>
 
@@ -456,51 +536,75 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                 <div className="space-y-4">
                                     {transactionsLoading ? (
                                         <div className="animate-pulse space-y-3">
-                                            {[...Array(3)].map((_, i) => (
+                                            {[...Array(5)].map((_, i) => (
                                                 <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
                                             ))}
                                         </div>
-                                    ) : transactions.length === 0 ? (
+                                    ) : recentTransactions.length === 0 ? (
                                         <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                                            Nenhuma atividade ainda.
-                                            <br />
-                                            Comece a reciclar para ganhar pontos!
+                                            <Recycle className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                            <p>Nenhuma atividade ainda.</p>
+                                            <p className="text-sm">Comece a reciclar para ganhar pontos!</p>
                                         </div>
                                     ) : (
-                                        transactions.slice(0, 5).map((transaction) => (
-                                            <div key={transaction.id} className="flex items-center space-x-4 border-b-1 p-4 rounded-xl">
-                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${transaction.type === 'recycling'
-                                                    ? 'bg-gradient-to-br from-green-500 to-blue-500'
-                                                    : transaction.type === 'bonus'
-                                                        ? 'bg-gradient-to-br from-yellow-500 to-orange-500'
-                                                        : 'bg-gradient-to-br from-purple-500 to-pink-500'
-                                                    }`}>
-                                                    {transaction.type === 'recycling' ? (
-                                                        <Recycle className="w-5 h-5" />
-                                                    ) : transaction.type === 'bonus' ? (
-                                                        <Plus className="w-5 h-5" />
-                                                    ) : (
-                                                        <Gift className="w-5 h-5" />
-                                                    )}
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="font-semibold">
-                                                        {transaction.description}
-                                                    </div>
-                                                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                                                        {formatFirestoreDate(transaction.timestamp)}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className={`font-bold ${transaction.points > 0
-                                                        ? 'text-green-600 dark:text-green-400'
-                                                        : 'text-red-600 dark:text-red-400'
-                                                        }`}>
-                                                        {transaction.points > 0 ? '+' : ''}{transaction.points} pts
-                                                    </div>
-                                                </div>
+                                        <>
+                                            <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                                Mostrando as 5 atividades mais recentes
                                             </div>
-                                        ))
+                                            {recentTransactions.slice(0, 5).map((transaction) => (
+                                                <div key={transaction.id} className="flex items-center space-x-4 p-4 rounded-xl hover:bg-white/70 dark:hover:bg-gray-600/50 transition-colors">
+                                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${transaction.type === 'recycling'
+                                                        ? 'bg-gradient-to-br from-green-500 to-blue-500'
+                                                        : transaction.type === 'bonus'
+                                                            ? 'bg-gradient-to-br from-yellow-500 to-orange-500'
+                                                            : transaction.type === 'reward'
+                                                                ? 'bg-gradient-to-br from-purple-500 to-pink-500'
+                                                                : 'bg-gradient-to-br from-gray-500 to-gray-600'
+                                                        }`}>
+                                                        {transaction.type === 'recycling' ? (
+                                                            <Recycle className="w-5 h-5" />
+                                                        ) : transaction.type === 'bonus' ? (
+                                                            <Plus className="w-5 h-5" />
+                                                        ) : transaction.type === 'reward' ? (
+                                                            <Gift className="w-5 h-5" />
+                                                        ) : (
+                                                            <Star className="w-5 h-5" />
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="font-semibold">
+                                                            {transaction.description || `${transaction.type} - ${transaction.points} pontos`}
+                                                        </div>
+                                                        <div className="text-sm flex items-center flex-wrap gap-2">
+                                                            <span>{formatFirestoreDate(transaction.timestamp)}</span>
+                                                            {transaction.type === 'recycling' && transaction.material && (
+                                                                <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 rounded text-xs">
+                                                                    {transaction.material}
+                                                                </span>
+                                                            )}
+                                                            {transaction.type === 'reward' && transaction.rewardName && (
+                                                                <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 rounded text-xs">
+                                                                    {transaction.rewardName}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className={`font-bold ${transaction.points > 0
+                                                            ? 'text-green-600 dark:text-green-400'
+                                                            : 'text-red-600 dark:text-red-400'
+                                                            }`}>
+                                                            {transaction.points > 0 ? '+' : ''}{transaction.points} pts
+                                                        </div>
+                                                        {transaction.type === 'recycling' && transaction.weight && (
+                                                            <div className="text-xs">
+                                                                {transaction.weight}{transaction.weightUnit || 'kg'}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
                                     )}
                                 </div>
                             )}
@@ -511,7 +615,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                     <div className="space-y-6">
                         {/* Ações Principais */}
                         <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
-                            <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                            <h3 className="text-xl font-bold mb-4 flex items-center justify-center space-x-2">
                                 <Plus className="w-5 h-5 text-green-500" />
                                 <span>Ações Principais</span>
                             </h3>
@@ -519,7 +623,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => setShowRecyclingModal(true)}
-                                    className="w-full cursor-pointer flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                    className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 >
                                     <Recycle className="w-5 h-5" />
                                     <span className="font-semibold">Nova Reciclagem</span>
@@ -527,13 +631,45 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
 
                                 <WelcomeGiftButton />
 
-                                {/* Substituir o botão antigo pelo novo modal */}
                                 <button
                                     onClick={() => setShowRewardsModal(true)}
-                                    className="w-full cursor-pointer flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                    className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300"
                                 >
                                     <Gift className="w-5 h-5" />
                                     <span className="font-semibold">Loja de Recompensas</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Ações Rápidas */}
+                        <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                            <h3 className="text-xl font-bold mb-4 flex items-center justify-center space-x-2">
+                                <Zap className="w-5 h-5 text-blue-500" />
+                                <span>Ações Rápidas</span>
+                            </h3>
+
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => setShowMapModal(true)}
+                                    className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 rounded-4xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                                >
+                                    <MapPin className="w-5 h-5 text-blue-500" />
+                                    <div className="text-left">
+                                        <div className="font-medium">Pontos de Coleta</div>
+                                        <div className="text-xs">
+                                            6 locais em {userData?.city || 'sua cidade'}
+                                        </div>
+                                    </div>
+                                </button>
+
+                                <button className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 rounded-4xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                                    <Settings className="w-5 h-5 text-gray-500" />
+                                    <div className="text-left">
+                                        <div className="font-medium">Configurações</div>
+                                        <div className="text-xs">
+                                            Perfil e preferências
+                                        </div>
+                                    </div>
                                 </button>
                             </div>
                         </div>
@@ -546,7 +682,14 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                             </h3>
 
                             <div className="space-y-3">
-                                {topMaterials.length > 0 ? (
+                                {allTransactionsLoading ? (
+                                    <div className="text-center py-4">
+                                        <div className="w-6 h-6 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                                            Carregando estatísticas...
+                                        </span>
+                                    </div>
+                                ) : topMaterials.length > 0 ? (
                                     topMaterials.map((material, index) => (
                                         <div key={index} className="p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
                                             <div className="flex justify-between items-center">
@@ -562,32 +705,17 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                     ))
                                 ) : (
                                     <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
-                                        Comece a reciclar para ver seus materiais favoritos!
+                                        <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                        <p>Comece a reciclar para ver seus materiais favoritos!</p>
                                     </div>
                                 )}
-                            </div>
-                        </div>
-
-                        {/* Ações Rápidas */}
-                        <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
-                            <h3 className="text-xl font-bold mb-4">Ações Rápidas</h3>
-
-                            <div className="space-y-3">
-                                <button className="w-full flex items-center space-x-3 px-4 py-3 bg-white/50 dark:bg-gray-800/50 rounded-lg hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                                    <MapPin className="w-5 h-5 text-blue-500" />
-                                    <span>Encontrar Pontos de Coleta</span>
-                                </button>
-
-                                <button className="w-full flex items-center space-x-3 px-4 py-3 bg-white/50 dark:bg-gray-800/50 rounded-lg hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
-                                    <Settings className="w-5 h-5 text-gray-500" />
-                                    <span>Configurações</span>
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
 
+            {/* Modais */}
             <RecyclingModal
                 isOpen={showRecyclingModal}
                 onClose={() => setShowRecyclingModal(false)}
@@ -598,6 +726,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 isOpen={showRewardsModal}
                 onClose={() => setShowRewardsModal(false)}
                 currentBalance={balance.currentBalance || 0}
+                darkMode={darkMode}
+            />
+
+            <MapModal
+                isOpen={showMapModal}
+                onClose={() => setShowMapModal(false)}
+                userData={userData}
                 darkMode={darkMode}
             />
         </div>

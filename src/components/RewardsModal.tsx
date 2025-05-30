@@ -20,7 +20,6 @@ import {
     History,
     Timer,
     Clock,
-    RotateCcw,
     Calendar
 } from 'lucide-react';
 import { useRewards } from '../hooks/useRewards';
@@ -48,8 +47,8 @@ interface Reward {
     popular?: boolean;
     limited?: boolean;
     discount?: string;
-    cooldownHours?: number; // Novo: horas de cooldown
-    maxUsesPerWeek?: number; // Novo: máximo de usos por semana
+    cooldownHours?: number;
+    maxUsesPerWeek?: number;
 }
 
 interface RedeemedReward {
@@ -100,7 +99,7 @@ const rewards: Reward[] = [
         icon: <Utensils className="w-6 h-6" />,
         color: 'from-green-500 to-emerald-600',
         bgColor: 'bg-green-600',
-        cooldownHours: 48, // 2 dias
+        cooldownHours: 24, // 1 dias
         maxUsesPerWeek: 2
     },
     {
@@ -112,7 +111,7 @@ const rewards: Reward[] = [
         icon: <Utensils className="w-6 h-6" />,
         color: 'from-green-500 to-emerald-600',
         bgColor: 'bg-green-600',
-        cooldownHours: 168, // 1 semana
+        cooldownHours: 72, // 1 semana
         maxUsesPerWeek: 1
     },
 
@@ -127,7 +126,7 @@ const rewards: Reward[] = [
         color: 'from-blue-500 to-cyan-600',
         bgColor: 'bg-blue-500',
         popular: true,
-        cooldownHours: 24, // 1 dia
+        cooldownHours: 17, // 1 dia
         maxUsesPerWeek: 3
     },
     {
@@ -139,7 +138,7 @@ const rewards: Reward[] = [
         icon: <Car className="w-6 h-6" />,
         color: 'from-indigo-500 to-purple-600',
         bgColor: 'bg-indigo-500',
-        cooldownHours: 72, // 3 dias
+        cooldownHours: 48, // 3 dias
         maxUsesPerWeek: 2
     },
 
@@ -154,7 +153,7 @@ const rewards: Reward[] = [
         color: 'from-pink-500 to-rose-600',
         bgColor: 'bg-pink-500',
         discount: '20%',
-        cooldownHours: 168, // 1 semana
+        cooldownHours: 50, // 2 dias
         maxUsesPerWeek: 1
     },
     {
@@ -181,7 +180,7 @@ const rewards: Reward[] = [
         color: 'from-yellow-500 to-orange-600',
         bgColor: 'bg-yellow-500',
         limited: true,
-        cooldownHours: 720, // 1 mês
+        cooldownHours: 60, // 3 dias
         maxUsesPerWeek: 1
     },
     {
@@ -194,7 +193,7 @@ const rewards: Reward[] = [
         color: 'from-yellow-500 to-orange-600',
         bgColor: 'bg-yellow-500',
         limited: true,
-        cooldownHours: 168, // 1 semana
+        cooldownHours: 37, // 1 dia
         maxUsesPerWeek: 1
     },
     {
@@ -206,7 +205,7 @@ const rewards: Reward[] = [
         icon: <Smartphone className="w-6 h-6" />,
         color: 'from-blue-500 to-indigo-600',
         bgColor: 'bg-blue-600',
-        cooldownHours: 168, // 1 semana
+        cooldownHours: 55, // 1 semana
         maxUsesPerWeek: 1
     },
 
@@ -221,7 +220,7 @@ const rewards: Reward[] = [
         color: 'from-green-600 to-emerald-700',
         bgColor: 'bg-green-600',
         popular: true,
-        cooldownHours: 168, // 1 semana
+        cooldownHours: 0.5,
         maxUsesPerWeek: 1
     },
     {
@@ -233,7 +232,7 @@ const rewards: Reward[] = [
         icon: <Heart className="w-6 h-6" />,
         color: 'from-red-500 to-pink-600',
         bgColor: 'bg-red-500',
-        cooldownHours: 72, // 3 dias
+        cooldownHours: 0.5,
         maxUsesPerWeek: 2
     },
     {
@@ -272,12 +271,12 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
     const [loadingRedeemed, setLoadingRedeemed] = useState(false);
 
     const { spendPoints, isProcessing } = useRewards();
-    const { showSuccess, showError, showWarning } = useToastContext();
+    const { showSuccess, showError } = useToastContext();
     const { user } = useAuth();
 
-    // Carregar recompensas já resgatadas
+    // Carregar recompensas já resgatadas - modificar para carregar SEMPRE que abrir o modal
     useEffect(() => {
-        if (!user || !isOpen || activeTab !== 'redeemed') return;
+        if (!user || !isOpen) return;
 
         setLoadingRedeemed(true);
 
@@ -289,11 +288,6 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
         );
 
         const unsubscribe = onSnapshot(rewardsQuery, (snapshot) => {
-            console.log('Raw transactions:', snapshot.docs.map(doc => ({
-                id: doc.id,
-                data: doc.data()
-            })));
-
             const redeemed = snapshot.docs.map(doc => {
                 const data = doc.data();
                 const redeemedAt = data.timestamp?.toDate() || new Date();
@@ -352,17 +346,15 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                     timeRemaining
                 } as RedeemedReward;
 
-                console.log('Processed reward:', reward);
                 return reward;
             });
 
-            console.log('All redeemed rewards:', redeemed);
             setRedeemedRewards(redeemed);
             setLoadingRedeemed(false);
         });
 
         return () => unsubscribe();
-    }, [user, isOpen, activeTab]);
+    }, [user, isOpen]); // Remover activeTab da dependência
 
     const formatTimeRemaining = (date: Date): string => {
         const now = new Date();
@@ -412,11 +404,39 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
         }
     });
 
+    // Função SIMPLIFICADA para verificar cooldown (apenas para renderização)
+    const canRedeemReward = (rewardId: string, cooldownHours?: number): { canRedeem: boolean; timeRemaining?: string; nextAvailable?: Date } => {
+        if (!cooldownHours) return { canRedeem: true };
+
+        const rewardRedemptions = redeemedRewards
+            .filter(r => r.rewardId === rewardId)
+            .sort((a, b) => b.redeemedAt.getTime() - a.redeemedAt.getTime());
+
+        if (rewardRedemptions.length === 0) return { canRedeem: true };
+
+        const lastRedemption = rewardRedemptions[0];
+        const cooldownMs = cooldownHours * 60 * 60 * 1000;
+        const nextAvailable = new Date(lastRedemption.redeemedAt.getTime() + cooldownMs);
+        const now = new Date();
+        const canRedeem = nextAvailable <= now;
+
+        return {
+            canRedeem,
+            timeRemaining: canRedeem ? undefined : formatTimeRemaining(nextAvailable),
+            nextAvailable: canRedeem ? undefined : nextAvailable
+        };
+    };
+
+    // Função para gerar código de resgate
+    const generateRedeemCode = (rewardName: string, redeemedAt: Date): string => {
+        const prefix = rewardName.substring(0, 3).toUpperCase();
+        const timestamp = redeemedAt.getTime().toString().slice(-6);
+        const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+        return `${prefix}${timestamp}${random}`;
+    };
+
     const handleRedeemReward = async (reward: Reward) => {
-        if (currentBalance < reward.points) {
-            showWarning(`Você precisa de ${reward.points} pontos para resgatar "${reward.name}"`);
-            return;
-        }
+        console.log(`🎯 Resgatando: ${reward.name} (${reward.id})`);
 
         setProcessingReward(reward.id);
 
@@ -425,15 +445,14 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                 points: reward.points,
                 rewardName: reward.name,
                 rewardCategory: reward.category,
-                rewardId: reward.id // Adicionar o ID da recompensa
+                rewardId: reward.id
             }) as { success: boolean; error?: string };
 
             if (result.success) {
                 showSuccess(
-                    `🎉 Parabéns! Você resgatou: ${reward.name}!`,
+                    `🎉 Parabéns! Você resgatou: ${reward.name}!\n\n⏰ Seu código ficará disponível após o período de carência.`,
                     8000
                 );
-                // Pequeno delay antes de fechar para mostrar o sucesso
                 setTimeout(() => {
                     onClose();
                 }, 1000);
@@ -701,44 +720,49 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                     const canAfford = currentBalance >= reward.points;
                                     const isProcessingThis = processingReward === reward.id;
 
+                                    // VERIFICAÇÃO ÚNICA: Saldo + Cooldown
+                                    const cooldownStatus = canRedeemReward(reward.id, reward.cooldownHours);
+                                    const canRedeemNow = canAfford && cooldownStatus.canRedeem;
+
                                     return (
                                         <div
                                             key={reward.id}
-                                            className={`relative rounded-2xl border-2 p-6 transition-all duration-300 hover:scale-105 ${canAfford
+                                            className={`relative rounded-2xl border-2 p-6 transition-all duration-300 hover:scale-105 ${canRedeemNow
                                                 ? 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 bg-white dark:bg-gray-800'
-                                                : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 opacity-60'
+                                                : !cooldownStatus.canRedeem
+                                                    ? 'border-orange-200 dark:border-orange-700 bg-orange-50 dark:bg-orange-900/20 opacity-80'
+                                                    : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 opacity-60'
                                                 }`}
                                         >
                                             {/* Badges */}
                                             <div className="absolute top-3 right-3 flex flex-col space-y-1">
-                                                {reward.popular && (
+                                                {!cooldownStatus.canRedeem && (
+                                                    <div className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center space-x-1">
+                                                        <Timer className="w-3 h-3" />
+                                                        <span>Em pausa</span>
+                                                    </div>
+                                                )}
+
+                                                {reward.popular && cooldownStatus.canRedeem && (
                                                     <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                                                         <Star className="w-3 h-3" />
                                                         <span>Popular</span>
                                                     </div>
                                                 )}
-                                                {reward.limited && (
+                                                {reward.limited && cooldownStatus.canRedeem && (
                                                     <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                                                         Limitado
                                                     </div>
                                                 )}
-                                                {reward.discount && (
+                                                {reward.discount && cooldownStatus.canRedeem && (
                                                     <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                                                         {reward.discount} OFF
-                                                    </div>
-                                                )}
-                                                {reward.cooldownHours && (
-                                                    <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                                                        <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400">
-                                                            <Timer className="w-3 h-3" />
-                                                            <span>Intervalo: {reward.cooldownHours < 24 ? `${reward.cooldownHours}h` : `${Math.floor(reward.cooldownHours / 24)}d`}</span>
-                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
 
                                             {/* Ícone */}
-                                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} text-white flex items-center justify-center mb-4`}>
+                                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reward.color} text-white flex items-center justify-center mb-4 ${!cooldownStatus.canRedeem ? 'opacity-60' : ''}`}>
                                                 {reward.icon}
                                             </div>
 
@@ -750,8 +774,31 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                                 {reward.description}
                                             </p>
 
-                                            {/* Cooldown info */}
-                                            {reward.cooldownHours && (
+                                            {/* Aviso de cooldown ativo */}
+                                            {!cooldownStatus.canRedeem && cooldownStatus.timeRemaining && (
+                                                <div className="mb-3 p-2 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-700">
+                                                    <div className="flex items-center space-x-2 text-xs text-orange-600 dark:text-orange-400">
+                                                        <Timer className="w-3 h-3" />
+                                                        <span>Disponível em: {cooldownStatus.timeRemaining}</span>
+                                                    </div>
+                                                    {cooldownStatus.nextAvailable && (
+                                                        <div className="mt-2">
+                                                            <div className="w-full bg-orange-200 dark:bg-orange-700 rounded-full h-1">
+                                                                <div
+                                                                    className="bg-gradient-to-r from-orange-500 to-red-500 h-1 rounded-full transition-all duration-500"
+                                                                    style={{
+                                                                        width: `${Math.min(((new Date().getTime() - (redeemedRewards.find(r => r.rewardId === reward.id)?.redeemedAt.getTime() || 0)) /
+                                                                            (cooldownStatus.nextAvailable.getTime() - (redeemedRewards.find(r => r.rewardId === reward.id)?.redeemedAt.getTime() || 0))) * 100, 100)}%`
+                                                                    }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Info de intervalo (quando pode resgatar) */}
+                                            {reward.cooldownHours && cooldownStatus.canRedeem && (
                                                 <div className="mb-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                                                     <div className="flex items-center space-x-2 text-xs text-blue-600 dark:text-blue-400">
                                                         <Timer className="w-3 h-3" />
@@ -772,16 +819,21 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
 
                                                 <button
                                                     onClick={() => handleRedeemReward(reward)}
-                                                    disabled={!canAfford || isProcessingThis || isProcessing}
-                                                    className={`px-3 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 cursor-pointer ${canAfford && !isProcessingThis
-                                                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105'
-                                                        : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+                                                    disabled={!canRedeemNow || isProcessingThis || isProcessing}
+                                                    className={`px-3 py-2 rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2 ${canRedeemNow && !isProcessingThis && !isProcessing
+                                                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105 cursor-pointer'
+                                                        : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed opacity-50'
                                                         }`}
                                                 >
                                                     {isProcessingThis ? (
                                                         <>
                                                             <Loader2 className="w-4 h-4 animate-spin" />
                                                             <span className="text-xs">Processando...</span>
+                                                        </>
+                                                    ) : !cooldownStatus.canRedeem ? (
+                                                        <>
+                                                            <Timer className="w-3 h-3" />
+                                                            <span className="text-xs">Em Pausa</span>
                                                         </>
                                                     ) : canAfford ? (
                                                         <>
@@ -798,7 +850,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                             </div>
 
                                             {/* Indicador de progresso para pontos insuficientes */}
-                                            {!canAfford && (
+                                            {!canAfford && cooldownStatus.canRedeem && (
                                                 <div className="mt-3">
                                                     <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                                                         <span>Faltam {(reward.points - currentBalance).toLocaleString()} pts</span>
@@ -878,44 +930,71 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                                             </div>
                                                         </div>
 
-                                                        {/* Status */}
-                                                        <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium ${reward.canRedeemAgain
-                                                            ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
-                                                            : 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'
-                                                            }`}>
-                                                            {reward.canRedeemAgain ? (
-                                                                <>
-                                                                    <RotateCcw className="w-3 h-3" />
-                                                                    <span>Pode resgatar novamente</span>
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <Timer className="w-3 h-3" />
-                                                                    <span>Em pausa - {reward.timeRemaining}</span>
-                                                                </>
-                                                            )}
-                                                        </div>
+                                                        {/* Status e Código Condicional */}
+                                                        {reward.canRedeemAgain ? (
+                                                            // CÓDIGO DISPONÍVEL - Cooldown terminou
+                                                            <>
+                                                                <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-3">
+                                                                    <Check className="w-3 h-3" />
+                                                                    <span>Código disponível!</span>
+                                                                </div>
 
-                                                        {/* Progress bar para intervalo de uso */}
-                                                        {!reward.canRedeemAgain && reward.nextAvailableAt && (
-                                                            <div className="mt-3">
-                                                                <div className="flex justify-between text-xs mb-1 text-gray-500 dark:text-gray-400">
-                                                                    <span>Progresso do intervalo</span>
-                                                                    <span>
-                                                                        {Math.round(((new Date().getTime() - reward.redeemedAt.getTime()) /
-                                                                            (reward.nextAvailableAt.getTime() - reward.redeemedAt.getTime())) * 100)}%
-                                                                    </span>
+                                                                {/* Código de resgate */}
+                                                                <div className="bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-3">
+                                                                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                                                        💳 Seu código de resgate:
+                                                                    </div>
+                                                                    <div className="font-mono text-lg font-bold text-green-600 dark:text-green-400 mb-2">
+                                                                        {generateRedeemCode(reward.rewardName, reward.redeemedAt)}
+                                                                    </div>
+                                                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                                        🏪 Apresente este código nos estabelecimentos parceiros
+                                                                    </div>
                                                                 </div>
-                                                                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                                                    <div
-                                                                        className="bg-gradient-to-r from-orange-500 to-red-500 h-2 rounded-full transition-all duration-500"
-                                                                        style={{
-                                                                            width: `${Math.min(((new Date().getTime() - reward.redeemedAt.getTime()) /
-                                                                                (reward.nextAvailableAt.getTime() - reward.redeemedAt.getTime())) * 100, 100)}%`
-                                                                        }}
-                                                                    ></div>
+                                                            </>
+                                                        ) : (
+                                                            // EM COOLDOWN - Código ainda não disponível
+                                                            <>
+                                                                <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 mb-3">
+                                                                    <Timer className="w-3 h-3" />
+                                                                    <span>Código disponível em: {reward.timeRemaining}</span>
                                                                 </div>
-                                                            </div>
+
+                                                                {/* Aviso de código pendente */}
+                                                                <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg p-3 mb-3">
+                                                                    <div className="text-xs text-orange-600 dark:text-orange-400 mb-1">
+                                                                        ⏰ Seu código será liberado em breve
+                                                                    </div>
+                                                                    <div className="font-mono text-sm text-gray-400 dark:text-gray-500 mb-2">
+                                                                        ● ● ● ● ● ● ● ● ● ● ● ●
+                                                                    </div>
+                                                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                                        🔒 Aguarde o período de carência para usar sua recompensa
+                                                                    </div>
+                                                                </div>
+
+                                                                {/* Progress bar para o cooldown */}
+                                                                {reward.nextAvailableAt && (
+                                                                    <div className="mb-3">
+                                                                        <div className="flex justify-between text-xs mb-1 text-gray-500 dark:text-gray-400">
+                                                                            <span>Progresso até liberação do código</span>
+                                                                            <span>
+                                                                                {Math.round(((new Date().getTime() - reward.redeemedAt.getTime()) /
+                                                                                    (reward.nextAvailableAt.getTime() - reward.redeemedAt.getTime())) * 100)}%
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                                                            <div
+                                                                                className="bg-gradient-to-r from-orange-500 to-green-500 h-2 rounded-full transition-all duration-500"
+                                                                                style={{
+                                                                                    width: `${Math.min(((new Date().getTime() - reward.redeemedAt.getTime()) /
+                                                                                        (reward.nextAvailableAt.getTime() - reward.redeemedAt.getTime())) * 100, 100)}%`
+                                                                                }}
+                                                                            ></div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </>
                                                         )}
                                                     </div>
                                                 </div>
@@ -924,10 +1003,11 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                                     <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
                                                         -{reward.points} pts
                                                     </div>
+
+                                                    {/* Botão para resgatar novamente - só quando código estiver disponível */}
                                                     {reward.canRedeemAgain && (
                                                         <button
                                                             onClick={() => {
-                                                                // Buscar configuração da recompensa
                                                                 let rewardConfig = rewards.find(r => r.id === reward.rewardId);
 
                                                                 if (!rewardConfig) {
@@ -949,7 +1029,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                                                                 : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                                                                 }`}
                                                         >
-                                                            {currentBalance >= reward.points ? 'Resgatar Novamente' : 'Saldo Insuficiente'}
+                                                            {currentBalance >= reward.points ? '🎁 Resgatar Novamente' : '💰 Saldo Insuficiente'}
                                                         </button>
                                                     )}
                                                 </div>
@@ -999,12 +1079,12 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
                             <span>Resgate instantâneo</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span>Intervalo de uso</span>
+                            <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                            <span>Código após carência</span>
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            <span>Resgates ilimitados</span>
+                            <span>Válido por 30 dias</span>
                         </div>
                     </div>
                 </div>
