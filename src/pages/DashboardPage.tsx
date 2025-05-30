@@ -32,6 +32,7 @@ import RecyclingModal from '../components/RecyclingModal'
 import WelcomeGiftButton from '../components/WelcomeGiftButton'
 import RewardsModal from '../components/RewardsModal'
 import MapModal from '../components/MapModal'
+import ProfileModal from '../components/ProfileModal'
 import { collection, query, where, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
@@ -196,6 +197,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const [showRecyclingModal, setShowRecyclingModal] = useState(false)
     const [showRewardsModal, setShowRewardsModal] = useState(false)
     const [showMapModal, setShowMapModal] = useState(false)
+    const [showProfileModal, setShowProfileModal] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -662,9 +664,12 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                     </div>
                                 </button>
 
-                                <button className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 rounded-4xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                                <button
+                                    onClick={() => setShowProfileModal(true)}
+                                    className="w-full cursor-pointer flex items-center justify-center space-x-3 px-4 py-3 rounded-4xl hover:bg-white/70 dark:hover:bg-gray-700/50 transition-colors duration-200"
+                                >
                                     <Settings className="w-5 h-5 text-gray-500" />
-                                    <div className="text-left">
+                                    <div className="text-center">
                                         <div className="font-medium">Configurações</div>
                                         <div className="text-xs">
                                             Perfil e preferências
@@ -732,6 +737,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
             <MapModal
                 isOpen={showMapModal}
                 onClose={() => setShowMapModal(false)}
+                userData={userData}
+                darkMode={darkMode}
+            />
+
+            <ProfileModal
+                isOpen={showProfileModal}
+                onClose={() => setShowProfileModal(false)}
                 userData={userData}
                 darkMode={darkMode}
             />

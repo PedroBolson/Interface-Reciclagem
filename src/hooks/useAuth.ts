@@ -18,14 +18,17 @@ export interface UserData {
     lastName: string
     cpf: string
     birthDate: string
+    phone: string
     cep: string
     address: string
     addressNumber: string
     city: string
     state: string
+    neighborhood: string
     acceptedTerms: boolean
     createdAt: any
     updatedAt: any
+    profileImageUrl?: string  // Nova propriedade para a foto de perfil
     // Novo campo para o presente de boas-vindas
     welcomeGiftClaimed?: boolean
     welcomeGiftClaimedAt?: any
