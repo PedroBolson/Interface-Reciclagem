@@ -434,7 +434,7 @@ transactions/    // Histórico de transações
 
 ### 1. Clonar o Repositório
 ```bash
-git clone <repository-url>
+git clone git@github.com:PedroBolson/Interface-Reciclagem.git
 cd Interface-Reciclagem
 ```
 
