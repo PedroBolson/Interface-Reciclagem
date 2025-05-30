@@ -258,3 +258,43 @@ api-keys.json
 # Local development
 local.json
 dev.json
+
+# Chaves SSH específicas do projeto
+id_rsa
+id_rsa.pub
+*.ssh
+
+# Configurações de banco específicas
+database.json
+db-config.json
+connection-strings.json
+
+# Tokens e credenciais
+.credentials
+.token
+access_token
+refresh_token
+bearer_token
+
+# Configurações específicas do Firebase
+google-services.json
+GoogleService-Info.plist
+firebase-adminsdk-*.json
+
+# AWS
+.aws/
+aws-config.json
+
+# Outros provedores de nuvem
+gcloud-config.json
+azure-config.json
+
+# Configurações de terceiros
+stripe-config.json
+paypal-config.json
+sendgrid-config.json
+
+# Logs que podem conter dados sensíveis
+audit.log
+security.log
+access.log
