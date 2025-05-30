@@ -178,6 +178,108 @@ const LevelBadge = ({ totalEarned, size = 'md', showProgress = false }: LevelBad
     )
 }
 
+interface ProfileAvatarProps {
+    userData: UserData | null
+    user: any
+    size?: string
+    textSize?: string
+    className?: string
+    showLoadingSpinner?: boolean
+}
+
+const ProfileAvatar = ({
+    userData,
+    user,
+    size = 'w-25 h-25',
+    textSize = 'text-2xl',
+    className = '',
+    showLoadingSpinner = true
+}: ProfileAvatarProps) => {
+    const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading')
+
+    const handleImageError = () => {
+        setImageState('error')
+    }
+
+    const handleImageLoad = () => {
+        setImageState('loaded')
+    }
+
+    const getInitials = () => {
+        const firstName = userData?.firstName?.trim()
+        const email = user?.email?.trim()
+
+        if (firstName && firstName.length > 0) {
+            return firstName.charAt(0).toUpperCase()
+        }
+        if (email && email.length > 0) {
+            return email.charAt(0).toUpperCase()
+        }
+        return '?'
+    }
+
+    // Reset state quando a URL muda
+    useEffect(() => {
+        if (userData?.profileImageUrl) {
+            setImageState('loading')
+        } else {
+            setImageState('error')
+        }
+    }, [userData?.profileImageUrl])
+
+    const hasValidImage = userData?.profileImageUrl && imageState !== 'error'
+    const isLoading = imageState === 'loading' && userData?.profileImageUrl
+
+    return (
+        <div className={`${size} rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white ${textSize} font-bold overflow-hidden border-2 border-white/20 shadow-lg relative group ${className}`}>
+            {/* Imagem de perfil */}
+            {hasValidImage && (
+                <div className="w-full h-full relative">
+                    <img
+                        src={userData.profileImageUrl}
+                        alt={`Foto de ${userData.firstName || 'usuário'}`}
+                        className={`w-full h-full transition-all duration-300 ${imageState === 'loaded' ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+                            }`}
+                        onError={handleImageError}
+                        onLoad={handleImageLoad}
+                        style={{
+                            objectFit: 'cover',
+                            objectPosition: 'center center',
+                        }}
+                        draggable={false}
+                    />
+
+                    {/* Overlay sutil para melhor contraste */}
+                    <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors duration-200"></div>
+                </div>
+            )}
+
+            {/* Loading spinner */}
+            {isLoading && showLoadingSpinner && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-500/90 to-blue-500/90 backdrop-blur-sm">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+
+            {/* Fallback - Iniciais */}
+            {!hasValidImage && !isLoading && (
+                <span className="flex items-center justify-center w-full h-full select-none transition-all duration-200 group-hover:scale-110">
+                    {getInitials()}
+                </span>
+            )}
+
+            {/* Indicador de hover para fotos */}
+            {hasValidImage && imageState === 'loaded' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-200">
+                    <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}
+
 const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const { user, signOut, getUserData } = useAuth()
     const { balance, loading: balanceLoading } = useUserBalance()
@@ -394,9 +496,12 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 <div className="mb-8">
                     <div className="backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-gray-700/50 shadow-xl bg-gradient-to-r from-green-500/10 to-blue-500/10">
                         <div className="flex items-center justify-center space-x-4 mb-4">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-                                {userData?.firstName?.charAt(0) || user?.email?.charAt(0)?.toUpperCase()}
-                            </div>
+                            <ProfileAvatar
+                                userData={userData}
+                                user={user}
+                                size="w-16 h-16"
+                                textSize="text-2xl"
+                            />
                             <div>
                                 <h1 className="text-3xl font-bold flex items-center">
                                     Olá, {userData?.firstName || 'Usuário'}!
@@ -695,19 +800,34 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                         </span>
                                     </div>
                                 ) : topMaterials.length > 0 ? (
-                                    topMaterials.map((material, index) => (
-                                        <div key={index} className="p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                                            <div className="flex justify-between items-center">
-                                                <div className="font-medium text-sm">{material.material}</div>
-                                                <span className="font-bold text-green-600 dark:text-green-400 text-sm">
-                                                    {material.totalPoints} pts
-                                                </span>
+                                    topMaterials.map((material, index) => {
+                                        const formatNumber = (num: number) => {
+                                            return num % 1 === 0 ? num.toString() : num.toFixed(2)
+                                        }
+
+                                        return (
+                                            <div key={index} className="p-3 rounded-lg hover:bg-white/70 dark:hover:bg-gray-600/70 transition-colors duration-200 border-b-1">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center space-x-2">
+                                                        <span className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center text-white ${index === 0 ? 'bg-yellow-500' :
+                                                            index === 1 ? 'bg-gray-400' :
+                                                                index === 2 ? 'bg-amber-600' :
+                                                                    'bg-gray-500'
+                                                            }`}>
+                                                            {index + 1}
+                                                        </span>
+                                                        <div className="font-medium text-sm">{material.material}</div>
+                                                    </div>
+                                                    <span className="font-bold text-green-600 dark:text-green-400 text-sm">
+                                                        {formatNumber(material.totalPoints)} pts
+                                                    </span>
+                                                </div>
+                                                <div className="text-xs mt-1 ml-8">
+                                                    {formatNumber(material.totalWeight)}kg • {material.count} vez{material.count !== 1 ? 'es' : ''}
+                                                </div>
                                             </div>
-                                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                                {material.totalWeight.toFixed(1)}kg • {material.count} vez{material.count !== 1 ? 'es' : ''}
-                                            </div>
-                                        </div>
-                                    ))
+                                        )
+                                    })
                                 ) : (
                                     <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
                                         <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
