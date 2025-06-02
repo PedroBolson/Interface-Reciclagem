@@ -34,6 +34,7 @@ interface RewardData {
     points: number;
     rewardName: string;
     rewardCategory: string;
+    rewardId?: string;
 }
 
 // Função para normalizar números (aceita vírgula e ponto)
@@ -308,8 +309,19 @@ export const spendPointsOnReward = onCall(async (request) => {
                 updatedAt: FieldValue.serverTimestamp()
             });
 
+            // Gerar código único fixo para a recompensa
+            const generateUniqueRewardCode = (rewardName: string, userId: string, transactionId: string): string => {
+                const prefix = rewardName.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'R');
+                const userHash = userId.substring(0, 4).toUpperCase();
+                const transactionHash = transactionId.substring(0, 4).toUpperCase();
+                const randomSuffix = Math.random().toString(36).substring(2, 5).toUpperCase();
+                return `${prefix}${userHash}${transactionHash}${randomSuffix}`;
+            };
+
             // Criar transação
             const transactionRef = db.collection('transactions').doc();
+            const rewardCode = generateUniqueRewardCode(data.rewardName, uid, transactionRef.id);
+
             transaction.set(transactionRef, {
                 uid,
                 type: 'reward',
@@ -317,6 +329,8 @@ export const spendPointsOnReward = onCall(async (request) => {
                 points: -normalizedPoints, // Negativo para indicar gasto
                 rewardName: data.rewardName,
                 rewardCategory: data.rewardCategory,
+                rewardId: data.rewardId || 'unknown',
+                rewardCode: rewardCode, // Código único fixo
                 description: `Resgate: ${data.rewardName} - ${data.rewardCategory}`,
                 timestamp: FieldValue.serverTimestamp(),
                 createdAt: FieldValue.serverTimestamp()
