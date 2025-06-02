@@ -861,7 +861,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
 
                         {/* Top Materiais */}
                         <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
-                            <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                            <h3 className="text-xl font-bold mb-4 flex items-center space-x-2 text-gray-800 dark:text-white">
                                 <Trophy className="w-5 h-5 text-yellow-500" />
                                 <span>Top Materiais</span>
                             </h3>
@@ -881,32 +881,44 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                         }
 
                                         return (
-                                            <div key={index} className="p-3 rounded-lg hover:bg-white/70 dark:hover:bg-gray-600/70 transition-colors duration-200 border-b-1">
+                                            <div
+                                                key={index}
+                                                className="group p-3 rounded-xl cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-lg border border-transparent hover:border-white/30 dark:hover:border-gray-600/50 hover:bg-gradient-to-r hover:from-white/80 hover:to-white/60 dark:hover:from-gray-700/60 dark:hover:to-gray-600/40"
+                                            >
                                                 <div className="flex justify-between items-center">
-                                                    <div className="flex items-center space-x-2">
-                                                        <span className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center text-white ${index === 0 ? 'bg-yellow-500' :
-                                                            index === 1 ? 'bg-gray-400' :
-                                                                index === 2 ? 'bg-amber-600' :
-                                                                    'bg-gray-500'
+                                                    <div className="flex items-center space-x-3">
+                                                        <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
+                                                                index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
+                                                                    index === 2 ? 'bg-gradient-to-br from-amber-500 to-amber-700' :
+                                                                        'bg-gradient-to-br from-gray-400 to-gray-600'
                                                             }`}>
                                                             {index + 1}
                                                         </span>
-                                                        <div className="font-medium text-sm">{material.material}</div>
+                                                        <div className="font-medium text-sm text-gray-800 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+                                                            {material.material}
+                                                        </div>
                                                     </div>
-                                                    <span className="font-bold text-green-600 dark:text-green-400 text-sm">
+                                                    <span className="font-bold text-green-600 dark:text-green-400 text-sm group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors duration-300">
                                                         {formatNumber(material.totalPoints)} pts
                                                     </span>
                                                 </div>
-                                                <div className="text-xs mt-1 ml-8">
+                                                <div className="text-xs mt-2 ml-10 text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
                                                     {formatNumber(material.totalWeight)}kg • {material.count} vez{material.count !== 1 ? 'es' : ''}
                                                 </div>
                                             </div>
                                         )
                                     })
                                 ) : (
-                                    <div className="text-center py-4 text-gray-500 dark:text-gray-400 text-sm">
-                                        <Trophy className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                                        <p>Comece a reciclar para ver seus materiais favoritos!</p>
+                                    <div className="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
+                                        <div className="p-4 rounded-xl bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50">
+                                            <Trophy className="w-10 h-10 mx-auto mb-3 opacity-40 text-gray-400 dark:text-gray-500" />
+                                            <p className="font-medium text-gray-600 dark:text-gray-400">
+                                                Comece a reciclar para ver seus materiais favoritos!
+                                            </p>
+                                            <p className="text-xs mt-1 text-gray-500 dark:text-gray-500">
+                                                Seus top 5 materiais aparecerão aqui
+                                            </p>
+                                        </div>
                                     </div>
                                 )}
                             </div>

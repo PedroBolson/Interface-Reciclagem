@@ -8,6 +8,7 @@ import UserProgramPage from './pages/UserProgramPage'
 import BusinessProgramPage from './pages/BusinessProgramPage'
 import PartnerPage from './pages/PartnerPage'
 import AppDownloadPage from './pages/AppDownloadPage'
+import DemoPage from './pages/DemoPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { ToastProvider } from './components/ui/ToastProvider'
 import './index.css'
@@ -72,6 +73,10 @@ function App() {
             <Route
               path="/app"
               element={<AppDownloadPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+            />
+            <Route
+              path="/demo"
+              element={<DemoPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
             />
           </Routes>
         </div>
