@@ -500,7 +500,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                         <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                             {/* Foto de Perfil */}
                             <div className="text-center">
-                                <h3 className="text-base sm:text-lg text-white font-semibold mb-4">Foto de Perfil</h3>
+                                <h3 className="text-base sm:text-lg text-gray-900 dark:text-white font-semibold mb-4">Foto de Perfil</h3>
 
                                 <div className="relative inline-block">
                                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
@@ -549,18 +549,18 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                     )}
                                 </div>
 
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                                     Arquivos suportados: JPG, PNG, GIF (máx. 10MB)
                                 </p>
                             </div>
 
                             {/* Informações Pessoais */}
                             <div>
-                                <h3 className="text-base sm:text-lg font-semibold text-white mb-4">Informações Pessoais</h3>
+                                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4">Informações Pessoais</h3>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <label className="block text-sm text-white font-medium mb-2">
+                                        <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                             Nome *
                                         </label>
                                         <div className="relative">
@@ -570,7 +570,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.firstName}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full pl-10 text-white placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.firstName
+                                                className={`w-full pl-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.firstName
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -587,7 +587,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                     </div>
 
                                     <div>
-                                        <label className="block text-white text-sm font-medium mb-2">
+                                        <label className="block text-gray-900 dark:text-white text-sm font-medium mb-2">
                                             Sobrenome *
                                         </label>
                                         <div className="relative">
@@ -597,7 +597,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.lastName}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full pl-10 text-white placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.lastName
+                                                className={`w-full pl-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.lastName
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -614,7 +614,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                     </div>
 
                                     <div className="sm:col-span-2">
-                                        <label className="block text-white text-sm font-medium mb-2">
+                                        <label className="block text-gray-900 dark:text-white text-sm font-medium mb-2">
                                             Email (não pode ser alterado)
                                         </label>
                                         <div className="relative">
@@ -629,7 +629,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                     </div>
 
                                     <div className="sm:col-span-2">
-                                        <label className="block text-white text-sm font-medium mb-2">
+                                        <label className="block text-gray-900 dark:text-white text-sm font-medium mb-2">
                                             Telefone *
                                         </label>
                                         <div className="relative">
@@ -639,7 +639,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.phone}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full pl-10 text-white placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.phone
+                                                className={`w-full pl-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.phone
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -659,12 +659,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
 
                             {/* Endereço - Simplificado para mobile */}
                             <div>
-                                <h3 className="text-base sm:text-lg font-semibold text-white mb-4">Endereço</h3>
+                                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4">Endereço</h3>
 
                                 <div className="space-y-4">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 CEP *
                                             </label>
                                             <div className="relative">
@@ -675,7 +675,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                     onChange={handleInputChange}
                                                     onBlur={handleCepBlur}
                                                     disabled={isSubmitting}
-                                                    className={`w-full pl-10 text-white placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.cep
+                                                    className={`w-full pl-10 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 pr-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.cep
                                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                         }`}
@@ -696,7 +696,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Bairro
                                             </label>
                                             <input
@@ -705,7 +705,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.neighborhood}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className="w-full text-white placeholder:text-gray-400 px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                                                className="w-full text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 py-2.5 sm:py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
                                                 placeholder="Seu bairro"
                                             />
                                         </div>
@@ -713,7 +713,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
 
                                     <div className="grid grid-cols-3 gap-2 sm:gap-4">
                                         <div className="col-span-2">
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Endereço *
                                             </label>
                                             <input
@@ -722,7 +722,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.address}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full text-white placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.address
+                                                className={`w-full text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.address
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -737,7 +737,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Número *
                                             </label>
                                             <input
@@ -746,7 +746,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.addressNumber}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full text-white placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.addressNumber
+                                                className={`w-full text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.addressNumber
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -763,7 +763,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
 
                                     <div className="grid grid-cols-3 gap-2 sm:gap-4">
                                         <div className="col-span-2">
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Cidade *
                                             </label>
                                             <input
@@ -772,7 +772,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.city}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full text-white placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.city
+                                                className={`w-full text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.city
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -787,7 +787,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm text-white font-medium mb-2">
+                                            <label className="block text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Estado *
                                             </label>
                                             <input
@@ -796,7 +796,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 value={formData.state}
                                                 onChange={handleInputChange}
                                                 disabled={isSubmitting}
-                                                className={`w-full text-white placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.state
+                                                className={`w-full text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${errors.state
                                                     ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                     : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                     }`}
@@ -817,20 +817,20 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                             {/* Seção de Senha - Compacta no mobile */}
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-base sm:text-lg text-white font-semibold">Alterar Senha</h3>
+                                    <h3 className="text-base sm:text-lg text-gray-900 dark:text-white font-semibold">Alterar Senha</h3>
                                     <button
                                         type="button"
                                         onClick={() => setShowPasswordSection(!showPasswordSection)}
-                                        className="text-blue-500 cursor-pointer hover:text-blue-600 text-xs sm:text-sm"
+                                        className="text-blue-600 dark:text-blue-400 cursor-pointer hover:text-blue-700 dark:hover:text-blue-300 text-xs sm:text-sm"
                                     >
                                         {showPasswordSection ? 'Cancelar' : 'Alterar Senha'}
                                     </button>
                                 </div>
 
                                 {showPasswordSection && (
-                                    <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 text-white bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+                                    <div className="space-y-3 sm:space-y-4 p-3 sm:p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
                                         <div>
-                                            <label className="block text-xs sm:text-sm font-medium mb-2">
+                                            <label className="block text-xs sm:text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Senha Atual *
                                             </label>
                                             <div className="relative">
@@ -840,7 +840,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                     value={passwordData.currentPassword}
                                                     onChange={handlePasswordChange}
                                                     disabled={isChangingPassword}
-                                                    className={`w-full pl-4 pr-12 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.currentPassword
+                                                    className={`w-full pl-4 pr-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.currentPassword
                                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                         }`}
@@ -849,7 +849,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                                 >
                                                     {showCurrentPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 </button>
@@ -863,7 +863,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs sm:text-sm font-medium mb-2">
+                                            <label className="block text-xs sm:text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Nova Senha *
                                             </label>
                                             <div className="relative">
@@ -873,7 +873,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                     value={passwordData.newPassword}
                                                     onChange={handlePasswordChange}
                                                     disabled={isChangingPassword}
-                                                    className={`w-full pl-4 pr-12 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.newPassword
+                                                    className={`w-full pl-4 pr-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.newPassword
                                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                         }`}
@@ -882,7 +882,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowNewPassword(!showNewPassword)}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                                 >
                                                     {showNewPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 </button>
@@ -896,7 +896,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs sm:text-sm font-medium mb-2">
+                                            <label className="block text-xs sm:text-sm text-gray-900 dark:text-white font-medium mb-2">
                                                 Confirmar Nova Senha *
                                             </label>
                                             <div className="relative">
@@ -906,7 +906,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                     value={passwordData.confirmPassword}
                                                     onChange={handlePasswordChange}
                                                     disabled={isChangingPassword}
-                                                    className={`w-full pl-4 pr-12 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.confirmPassword
+                                                    className={`w-full pl-4 pr-12 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 py-2.5 sm:py-3 rounded-lg border transition-all duration-200 bg-transparent focus:ring-2 focus:border-transparent text-sm sm:text-base ${passwordErrors.confirmPassword
                                                         ? 'border-red-300 dark:border-red-600 focus:ring-red-500'
                                                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
                                                         }`}
@@ -915,7 +915,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                                 >
                                                     {showConfirmPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                                                 </button>
@@ -955,12 +955,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
 
                 {/* Footer - Fixed */}
                 <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 p-3 sm:p-6">
-                    <div className="flex flex-col sm:flex-row items-center text-white justify-between space-y-3 sm:space-y-0">
+                    <div className="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
                         <button
                             type="button"
                             onClick={handleReset}
                             disabled={isSubmitting || isChangingPassword || isUploadingImage || isDeletingImage}
-                            className="w-full sm:w-auto flex items-center cursor-pointer justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm"
+                            className="w-full sm:w-auto flex items-center cursor-pointer justify-center space-x-2 px-4 sm:px-6 py-2.5 sm:py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm"
                         >
                             <RotateCcw className="w-4 h-4" />
                             <span>Resetar</span>
@@ -971,7 +971,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, userData }
                                 type="button"
                                 onClick={handleClose}
                                 disabled={isSubmitting || isChangingPassword || isUploadingImage || isDeletingImage}
-                                className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 cursor-pointer border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm"
+                                className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 cursor-pointer border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 text-sm"
                             >
                                 Cancelar
                             </button>

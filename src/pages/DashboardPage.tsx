@@ -888,9 +888,9 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                                 <div className="flex justify-between items-center">
                                                     <div className="flex items-center space-x-3">
                                                         <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
-                                                                index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
-                                                                    index === 2 ? 'bg-gradient-to-br from-amber-500 to-amber-700' :
-                                                                        'bg-gradient-to-br from-gray-400 to-gray-600'
+                                                            index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
+                                                                index === 2 ? 'bg-gradient-to-br from-amber-500 to-amber-700' :
+                                                                    'bg-gradient-to-br from-gray-400 to-gray-600'
                                                             }`}>
                                                             {index + 1}
                                                         </span>
@@ -954,6 +954,42 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 userData={userData}
                 darkMode={darkMode}
             />
+
+            <footer className="relative mt-16">
+                {/* Background decorativo */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 via-blue-50/50 to-emerald-50/50 dark:from-gray-900/50 dark:via-slate-900/50 dark:to-emerald-900/50"></div>
+
+                {/* Conteúdo do footer */}
+                <div className="relative border-t border-gray-200/60 dark:border-gray-700/60 py-8">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                            {/* Texto centralizado */}
+                            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <span>© 2025 EcoRecicla.</span>
+                                </div>
+
+                                <div className="h-4 w-px bg-gray-300 dark:bg-gray-600 hidden sm:block"></div>
+
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    Projeto DEMO - Interface Humano Computador
+                                </div>
+                                <svg
+                                    className="w-18 h-18 opacity-70 hover:opacity-100 transition-opacity duration-300 text-gray-600 dark:text-gray-400"
+                                    viewBox="0 0 2048 955"
+                                    fill="currentColor"
+                                >
+                                    <path transform="translate(432)" d="m0 0h32l5 6 8 7 6 10 5 17 12 74 12 80 2 8h10l64-8 51-4 64-3h70l36 2 27 3 15 4 13 7 6 5 7 11 4 10v15l-6 12-12 13-11 9-18 11-24 14-56 34-24 15-25 16-20 13-14 9-15 10-11 7-21 14-23 16-29 19-4 3 2 10 14 54 19 66 12 40 16 49 12 35 17 46 11 33 4 19v19l-3 12-8 15-11 12-9 6-12 4-11 2-14-1-14-5-16-10-15-13-14-12-31-29-24-22-16-15-39-36-12-11-13-12-8-7-10-9-24-22-8-7-15-14-8-7-11-10-9-6-6 4-25 20-17 12-18 14-11 8-16 12-17 13-11 8-17 13-15 11-18 14-14 10-20 15-14 10-18 13-13 8-13 6-9 2h-11l-13-4-8-6-7-7-9-13v-38l11-30 11-28 15-36 11-25 26-56 38-76 13-23 6-11-1-5-17-14-13-11-11-9-14-12-22-18-14-12-8-8-7-10-3-8v-7l3-9 9-9 17-9 29-12 27-10 42-15 36-12 47-15 18-6 6-4 11-17 10-17 15-24 16-25 10-15 14-22 8-11 7-11 17-25 16-24 9-13 14-19 11-16 9-10 8-7zm-32 100-9 7-7 8-10 13-12 17-13 19-22 33-11 17-23 34-1 2 8-1 27-7 60-14 36-7 2-1v-8l-12-75-6-31-3-6zm284 144-70 2-54 3-37 3-2 1 5 26 8 38 10 50 3 12 1 2 5-1 24-15 13-9 27-18 43-29 36-24 19-13 10-9 2-4v-7l-3-6-9-2zm-254 18-35 5-53 9-49 9-23 5-3 2-6 12-7 11-10 18-14 25-16 29-12 22-15 28-9 16 1 4 15 13 14 12 13 11 14 11 9 8 11 9 14 12 14 11 10 8 5-2 50-34 12-8 25-17 12-8 43-29 19-12 9-6 1-7-19-85-15-77-3-5zm-206 38-65 18-49 15-32 11-16 7-5 4v2h2l2 4 9 10 9 8 16 12 16 13 13 10 16 13 9 7h3l9-15 9-16 14-25 10-17 26-44 8-17zm-67 192-12 27-17 36-18 38-17 36-16 36-7 18v6l4 6 4 4 10-1 12-6 19-13 11-8 16-11 14-10 18-13 14-10 19-14 15-11 17-12 14-10v-4l-10-9-11-9-14-13-8-7-14-12-11-9-26-22-4-3zm331 21-18 12-14 10-17 12-19 13-12 9-17 12-14 10-13 9-8 5 1 3 11 9 13 12 11 9 15 13 12 11 11 9 8 8 8 7 10 9 11 9 10 9 11 9 14 13 8 7 14 12 13 11 11 8 8 1 4-4 1-6-5-19-17-56-16-53-19-67-13-51-2-5z" fill="#375C93"></path>
+                                    <path transform="translate(1536,219)" d="m0 0h48l28 4 23 5 9 3 2 3 1 19v35l-6-1-18-7-24-7-12-2-12-1h-22l-21 3-16 5-17 9-13 12-8 9-6 10-6 15-4 18-1 7v23l3 19 6 18 8 14 8 10 8 7 11 7 13 6 17 4 8 1h29l18-3 8-4 1-2 1-86 1-1 60 1v121l-5 5-28 10-26 6-27 4-14 1h-24l-20-2-25-6-18-7-17-9-12-9-12-11-9-10-9-14-8-16-6-15-4-16-2-17v-25l4-15 5-12 8-12 9-10 12-9 15-8 19-6z" fill="#375C93"></path>
+                                    <path transform="translate(1258,218)" d="m0 0 27 1 22 4 19 5 9 4 3 3 1 53-5-1-20-8-17-5-24-4h-17l-10 3-8 6-6 9-1 4v8l4 10 6 8 8 6 27 15 22 11 16 10 11 8 10 9 8 10 8 16 4 13 1 6v22l-4 16-8 16-11 13-9 8-14 9-19 7-25 5-10 1h-23l-22-3-21-6-18-7-14-8-2-4 15-29 4-11 2-3 5 1 15 8 16 6 13 3 8 1h25l11-3 9-5 6-5 4-6 2-10-4-13-5-8-7-7-11-7-27-14-22-12-15-10-10-8-8-8-9-14-5-12-3-12v-21l4-15 5-12 8-12 9-10 12-9 15-8 19-6z" fill="#375C93"></path>
+                                    <path transform="translate(957,221)" d="m0 0h166l3 1-2 9-11 38-3 4h-87l-5-1v18l-1 51h91l2 2v47l-1 1h-92v122l-1 1-36 1h-22l-2-3v-290z" fill="#375C93"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
         </div>
     )
 }

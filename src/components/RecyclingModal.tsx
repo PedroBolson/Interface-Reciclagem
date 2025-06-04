@@ -361,7 +361,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                             <Recycle className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">Nova Reciclagem</h2>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Nova Reciclagem</h2>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                 {currentStep <= 3 ? `Passo ${currentStep} de 3` :
                                     currentStep === 4 ? 'Aguardando Confirmação' : 'Concluído'}
@@ -372,7 +372,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                         onClick={handleClose}
                         className="p-2 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
-                        <X className="w-5 h-5 text-white" />
+                        <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                     </button>
                 </div>
 
@@ -391,7 +391,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                     {/* Step 1: Material Selection */}
                     {currentStep === 1 && (
                         <div>
-                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-gray-900 dark:text-white">
                                 <Package className="w-5 h-5 text-green-500" />
                                 <span>Selecione o Material</span>
                             </h3>
@@ -405,7 +405,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                         <div className={`w-12 h-12 rounded-full ${material.bgColor} text-white flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-200`}>
                                             {material.icon}
                                         </div>
-                                        <div className="font-medium text-sm mb-1">{material.name}</div>
+                                        <div className="font-medium text-sm mb-1 text-gray-900 dark:text-white">{material.name}</div>
                                         <div className={`text-xs ${material.color} font-bold mb-1`}>
                                             {material.points.toFixed(2)} pts/{material.unit}
                                         </div>
@@ -426,9 +426,9 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                     {/* Step 2: Weight Input */}
                     {currentStep === 2 && (
                         <div>
-                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-gray-900 dark:text-white">
                                 <Weight className="w-5 h-5 text-blue-500" />
-                                <span className='text-white'>Quantidade de {formData.material}</span>
+                                <span>Quantidade de {formData.material}</span>
                             </h3>
 
                             <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-4 mb-6">
@@ -437,7 +437,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                         {selectedMaterial?.icon}
                                     </div>
                                     <div>
-                                        <div className="font-medium text-white">{formData.material}</div>
+                                        <div className="font-medium text-gray-900 dark:text-white">{formData.material}</div>
                                         <div className={`text-sm ${selectedMaterial?.color} font-bold`}>
                                             {selectedMaterial?.points.toFixed(2)} pontos por {selectedMaterial?.unit}
                                         </div>
@@ -450,7 +450,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-white text-sm font-medium mb-2">
+                                    <label className="block text-gray-900 dark:text-white text-sm font-medium mb-2">
                                         Peso/Quantidade
                                     </label>
                                     <div className="flex space-x-2">
@@ -463,12 +463,12 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                                 setFormData(prev => ({ ...prev, weight: cleanValue }));
                                             }}
                                             placeholder="Ex: 2,75 ou 2.75"
-                                            className="flex-1 text-white placeholder:text-white px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800"
+                                            className="flex-1 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800"
                                         />
                                         <select
                                             value={formData.weightUnit}
                                             onChange={(e) => setFormData(prev => ({ ...prev, weightUnit: e.target.value as 'kg' | 'g' }))}
-                                            className="px-4 py-3 text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800"
+                                            className="px-4 py-3 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800"
                                         >
                                             <option value="kg">kg</option>
                                             <option value="g">g</option>
@@ -521,7 +521,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                 <div className="flex space-x-3">
                                     <button
                                         onClick={() => setCurrentStep(1)}
-                                        className="px-6 py-3 text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                        className="px-6 py-3 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                     >
                                         Voltar
                                     </button>
@@ -540,14 +540,14 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                     {/* Step 3: Location Selection */}
                     {currentStep === 3 && (
                         <div>
-                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+                            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-gray-900 dark:text-white">
                                 <MapPin className="w-5 h-5 text-purple-500" />
-                                <span className='text-white'>Local de Reciclagem</span>
+                                <span>Local de Reciclagem</span>
                             </h3>
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-white text-sm font-medium mb-2">
+                                    <label className="block text-gray-900 dark:text-white text-sm font-medium mb-2">
                                         Selecione o ponto de coleta
                                     </label>
                                     <div className="space-y-2">
@@ -555,7 +555,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                             <button
                                                 key={index}
                                                 onClick={() => setFormData(prev => ({ ...prev, location: location.name }))}
-                                                className={`w-full cursor-pointer text-white p-3 text-left border-2 rounded-lg transition-all duration-200 ${formData.location === location.name
+                                                className={`w-full cursor-pointer p-3 text-left border-2 rounded-lg transition-all duration-200 ${formData.location === location.name
                                                     ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
                                                     : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
                                                     }`}
@@ -566,7 +566,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                                             <MapPin className="w-4 h-4" />
                                                         </div>
                                                         <div>
-                                                            <div className="text-sm font-medium">{location.name}</div>
+                                                            <div className="text-sm font-medium text-gray-900 dark:text-white">{location.name}</div>
                                                             <div className="text-xs text-gray-500 dark:text-gray-400">
                                                                 ID: {location.id}
                                                             </div>
@@ -605,7 +605,7 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
                                 <div className="flex space-x-3">
                                     <button
                                         onClick={() => setCurrentStep(2)}
-                                        className="px-6 cursor-pointer text-white py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                        className="px-6 cursor-pointer py-3 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                     >
                                         Voltar
                                     </button>
@@ -679,22 +679,22 @@ const RecyclingModal: React.FC<RecyclingModalProps> = ({ isOpen, onClose, onSucc
 
                             {/* Informações do pedido */}
                             <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 mb-6 text-left">
-                                <h4 className="font-semibold mb-3 text-white">Detalhes da Reciclagem:</h4>
+                                <h4 className="font-semibold mb-3 text-gray-900 dark:text-white">Detalhes da Reciclagem:</h4>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className='text-white'>Material:</span>
-                                        <span className="font-medium text-white">{formData.material}</span>
+                                        <span className="text-gray-700 dark:text-gray-300">Material:</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">{formData.material}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className='text-white'>Quantidade:</span>
-                                        <span className="font-medium text-white">{formData.weight}{formData.weightUnit}</span>
+                                        <span className="text-gray-700 dark:text-gray-300">Quantidade:</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">{formData.weight}{formData.weightUnit}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className='text-white'>Local:</span>
-                                        <span className="font-medium text-white">{selectedLocation?.id}</span>
+                                        <span className="text-gray-700 dark:text-gray-300">Local:</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">{selectedLocation?.id}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className='text-white'>Pontos finais:</span>
+                                        <span className="text-gray-700 dark:text-gray-300">Pontos finais:</span>
                                         <span className="font-bold text-green-600 dark:text-green-400">
                                             {pointsCalculation.finalPoints.toFixed(2)} pts
                                         </span>
