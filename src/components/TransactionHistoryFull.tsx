@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getUserTransactions, type Transaction } from '../services/firestoreService'
-import { Recycle, Gift, Plus, Clock, TrendingUp, Filter } from 'lucide-react'
+import { Recycle, Gift, Plus, Clock, TrendingUp, Filter, MapPin, Package, X } from 'lucide-react'
 
 interface TransactionHistoryFullProps {
     uid: string
@@ -62,6 +62,8 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
     const [transactions, setTransactions] = useState<Transaction[]>([])
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState<'all' | 'recycling' | 'bonus' | 'reward'>('all')
+    const [locationFilter, setLocationFilter] = useState<string>('all')
+    const [materialFilter, setMaterialFilter] = useState<string>('all')
     const [refreshing, setRefreshing] = useState(false)
 
     const loadTransactions = async (showRefreshLoader = false) => {
@@ -89,9 +91,48 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
         }
     }, [uid])
 
-    const filteredTransactions = filter === 'all'
-        ? transactions
-        : transactions.filter(t => t.type === filter)
+    // Obter lista única de localizações e materiais
+    const uniqueLocations = Array.from(new Set(
+        transactions
+            .filter(t => t.location && t.location.trim() !== '')
+            .map(t => t.location!)
+    )).sort()
+
+    const uniqueMaterials = Array.from(new Set(
+        transactions
+            .filter(t => t.material && t.material.trim() !== '')
+            .map(t => t.material!)
+    )).sort()
+
+    // Aplicar todos os filtros
+    const filteredTransactions = transactions.filter(transaction => {
+        // Filtro por tipo
+        if (filter !== 'all' && transaction.type !== filter) {
+            return false
+        }
+
+        // Filtro por localização
+        if (locationFilter !== 'all' && transaction.location !== locationFilter) {
+            return false
+        }
+
+        // Filtro por material
+        if (materialFilter !== 'all' && transaction.material !== materialFilter) {
+            return false
+        }
+
+        return true
+    })
+
+    // Função para limpar todos os filtros
+    const clearFilters = () => {
+        setFilter('all')
+        setLocationFilter('all')
+        setMaterialFilter('all')
+    }
+
+    // Verificar se há filtros ativos
+    const hasActiveFilters = filter !== 'all' || locationFilter !== 'all' || materialFilter !== 'all'
 
     const getTransactionIcon = (type: string) => {
         switch (type) {
@@ -132,13 +173,13 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
         }
     }
 
-    // Estatísticas do histórico
+    // Estatísticas atualizadas com filtros
     const stats = {
-        total: transactions.length,
-        recycling: transactions.filter(t => t.type === 'recycling').length,
-        bonus: transactions.filter(t => t.type === 'bonus').length,
-        reward: transactions.filter(t => t.type === 'reward').length,
-        totalPoints: transactions.reduce((sum, t) => sum + Math.abs(t.points), 0)
+        total: filteredTransactions.length,
+        recycling: filteredTransactions.filter(t => t.type === 'recycling').length,
+        bonus: filteredTransactions.filter(t => t.type === 'bonus').length,
+        reward: filteredTransactions.filter(t => t.type === 'reward').length,
+        totalPoints: filteredTransactions.reduce((sum, t) => sum + Math.abs(t.points), 0)
     }
 
     if (loading) {
@@ -160,7 +201,7 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
                         {stats.total}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
-                        Total
+                        {hasActiveFilters ? 'Filtradas' : 'Total'}
                     </div>
                 </div>
                 <div className="group cursor-pointer border border-gray-200/60 dark:border-gray-700/60 rounded-2xl p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-green-300/60 dark:hover:border-green-600/60 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-gray-800/80">
@@ -189,30 +230,109 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
                 </div>
             </div>
 
-            {/* Controles */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-2">
-                <div className="flex items-center space-x-2">
-                    <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                    <select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value as any)}
-                        className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
+            {/* Controles de Filtro */}
+            <div className="space-y-4 px-2">
+                {/* Primeira linha de filtros */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex items-center space-x-2">
+                        <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value as any)}
+                            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
+                        >
+                            <option value="all">Todos os tipos ({transactions.length})</option>
+                            <option value="recycling">Reciclagem ({transactions.filter(t => t.type === 'recycling').length})</option>
+                            <option value="bonus">Bônus ({transactions.filter(t => t.type === 'bonus').length})</option>
+                            <option value="reward">Resgates ({transactions.filter(t => t.type === 'reward').length})</option>
+                        </select>
+                    </div>
+
+                    <button
+                        onClick={() => loadTransactions(true)}
+                        disabled={refreshing}
+                        className="flex items-center space-x-2 px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 hover:scale-105 hover:shadow-lg disabled:hover:scale-100 disabled:hover:shadow-none"
                     >
-                        <option value="all">Todas ({stats.total})</option>
-                        <option value="recycling">Reciclagem ({stats.recycling})</option>
-                        <option value="bonus">Bônus ({stats.bonus})</option>
-                        <option value="reward">Resgates ({stats.reward})</option>
-                    </select>
+                        <TrendingUp className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        <span>{refreshing ? 'Atualizando...' : 'Atualizar'}</span>
+                    </button>
                 </div>
 
-                <button
-                    onClick={() => loadTransactions(true)}
-                    disabled={refreshing}
-                    className="flex items-center space-x-2 px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 hover:scale-105 hover:shadow-lg disabled:hover:scale-100 disabled:hover:shadow-none"
-                >
-                    <TrendingUp className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    <span>{refreshing ? 'Atualizando...' : 'Atualizar'}</span>
-                </button>
+                {/* Segunda linha de filtros */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Filtro por localização */}
+                    <div className="flex items-center space-x-2 flex-1">
+                        <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                        <select
+                            value={locationFilter}
+                            onChange={(e) => setLocationFilter(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
+                            disabled={uniqueLocations.length === 0}
+                        >
+                            <option value="all">
+                                {uniqueLocations.length === 0 ? 'Nenhuma localização' : `Todas as localizações (${uniqueLocations.length})`}
+                            </option>
+                            {uniqueLocations.map(location => (
+                                <option key={location} value={location}>
+                                    {location} ({transactions.filter(t => t.location === location).length})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Filtro por material */}
+                    <div className="flex items-center space-x-2 flex-1">
+                        <Package className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                        <select
+                            value={materialFilter}
+                            onChange={(e) => setMaterialFilter(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-500"
+                            disabled={uniqueMaterials.length === 0}
+                        >
+                            <option value="all">
+                                {uniqueMaterials.length === 0 ? 'Nenhum material' : `Todos os materiais (${uniqueMaterials.length})`}
+                            </option>
+                            {uniqueMaterials.map(material => (
+                                <option key={material} value={material}>
+                                    {material} ({transactions.filter(t => t.material === material).length})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Botão para limpar filtros */}
+                    {hasActiveFilters && (
+                        <button
+                            onClick={clearFilters}
+                            className="flex items-center space-x-2 px-3 py-2 bg-gray-500 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:shadow-lg whitespace-nowrap"
+                        >
+                            <X className="w-4 h-4" />
+                            <span className="hidden sm:inline">Limpar filtros</span>
+                        </button>
+                    )}
+                </div>
+
+                {/* Indicador de filtros ativos */}
+                {hasActiveFilters && (
+                    <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="text-gray-600 dark:text-gray-400">Filtros ativos:</span>
+                        {filter !== 'all' && (
+                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                                Tipo: {getTypeLabel(filter)}
+                            </span>
+                        )}
+                        {locationFilter !== 'all' && (
+                            <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
+                                Local: {locationFilter}
+                            </span>
+                        )}
+                        {materialFilter !== 'all' && (
+                            <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">
+                                Material: {materialFilter}
+                            </span>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Lista de transações */}
@@ -222,14 +342,25 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
                         <div className="p-6 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50">
                             <Clock className="w-12 h-12 mx-auto mb-3 opacity-40 text-gray-400 dark:text-gray-500" />
                             <p className="font-medium text-gray-600 dark:text-gray-400 mb-1">
-                                {filter === 'all'
-                                    ? 'Nenhuma transação encontrada'
-                                    : `Nenhuma transação do tipo "${getTypeLabel(filter)}" encontrada`
+                                {hasActiveFilters
+                                    ? 'Nenhuma transação encontrada com os filtros aplicados'
+                                    : 'Nenhuma transação encontrada'
                                 }
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-500">
-                                Suas transações aparecerão aqui conforme você usar o app
+                                {hasActiveFilters
+                                    ? 'Tente ajustar os filtros ou limpe-os para ver todas as transações'
+                                    : 'Suas transações aparecerão aqui conforme você usar o app'
+                                }
                             </p>
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={clearFilters}
+                                    className="mt-3 px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-all duration-200"
+                                >
+                                    Limpar filtros
+                                </button>
+                            )}
                         </div>
                     </div>
                 ) : (
@@ -279,7 +410,8 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
 
             {filteredTransactions.length > 0 && (
                 <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                    Mostrando {filteredTransactions.length} de {stats.total} transações
+                    Mostrando {filteredTransactions.length} de {transactions.length} transações
+                    {hasActiveFilters && ' (filtradas)'}
                 </div>
             )}
         </div>

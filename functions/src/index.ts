@@ -659,3 +659,93 @@ export const checkWelcomeGiftEligibility = onCall(async (request) => {
         throw new HttpsError('internal', 'Erro interno do servidor');
     }
 });
+
+// Função para obter ranking de cidades
+export const getCityRanking = onCall(async (request) => {
+    try {
+        console.log('🏆 Iniciando cálculo do ranking de cidades...');
+
+        // Buscar todos os usuários para mapear cidades
+        const usersSnapshot = await db.collection('users').get();
+        console.log(`👥 Encontrados ${usersSnapshot.docs.length} usuários`);
+
+        // Mapear usuários por cidade
+        const userCityMap = new Map<string, string>();
+        const cityUsers = new Map<string, number>();
+
+        usersSnapshot.docs.forEach(doc => {
+            const userData = doc.data();
+            const city = userData.city?.trim();
+            const uid = doc.id;
+
+            if (city && city !== '') {
+                userCityMap.set(uid, city);
+                cityUsers.set(city, (cityUsers.get(city) || 0) + 1);
+            }
+        });
+
+        console.log(`🏙️ Encontradas ${cityUsers.size} cidades únicas`);
+
+        // Buscar todas as transações de reciclagem
+        const transactionsSnapshot = await db.collection('transactions')
+            .where('type', '==', 'recycling')
+            .get();
+
+        console.log(`♻️ Encontradas ${transactionsSnapshot.docs.length} transações de reciclagem`);
+
+        // Inicializar dados das cidades
+        const cityData = new Map();
+        cityUsers.forEach((userCount, city) => {
+            cityData.set(city, {
+                city,
+                totalPoints: 0,
+                totalUsers: userCount,
+                averagePerUser: 0,
+                totalRecycled: 0,
+                co2Saved: 0,
+                totalWeight: 0
+            });
+        });
+
+        // Processar transações por cidade
+        transactionsSnapshot.docs.forEach(doc => {
+            const transaction = doc.data();
+            const userCity = userCityMap.get(transaction.uid);
+
+            if (userCity && cityData.has(userCity)) {
+                const cityStats = cityData.get(userCity);
+
+                // Somar pontos
+                cityStats.totalPoints += transaction.points || 0;
+                cityStats.totalRecycled += 1;
+
+                // Calcular peso e CO2
+                const weight = transaction.weight || 1;
+                const weightInKg = transaction.weightUnit === 'g' ? weight / 1000 : weight;
+                cityStats.totalWeight += weightInKg;
+                cityStats.co2Saved += weightInKg * 1.75; // Fórmula do projeto
+            }
+        });
+
+        // Calcular média e ordenar
+        const ranking = Array.from(cityData.values())
+            .map(city => ({
+                ...city,
+                averagePerUser: city.totalUsers > 0 ? city.totalPoints / city.totalUsers : 0
+            }))
+            .sort((a, b) => b.totalPoints - a.totalPoints);
+
+        console.log(`🏆 Ranking calculado com ${ranking.length} cidades`);
+
+        return {
+            success: true,
+            ranking,
+            totalCities: ranking.length,
+            updatedAt: new Date().toISOString()
+        };
+
+    } catch (error) {
+        console.error('❌ Erro ao calcular ranking de cidades:', error);
+        throw new HttpsError('internal', 'Erro interno do servidor');
+    }
+});

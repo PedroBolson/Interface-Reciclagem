@@ -33,6 +33,7 @@ import WelcomeGiftButton from '../components/WelcomeGiftButton'
 import RewardsModal from '../components/RewardsModal'
 import MapModal from '../components/MapModal'
 import ProfileModal from '../components/ProfileModal'
+import CityRankingModal from '../components/CityRankingModal'
 import { collection, query, where, orderBy, onSnapshot, limit } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 
@@ -300,6 +301,7 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
     const [showRewardsModal, setShowRewardsModal] = useState(false)
     const [showMapModal, setShowMapModal] = useState(false)
     const [showProfileModal, setShowProfileModal] = useState(false)
+    const [showCityRankingModal, setShowCityRankingModal] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -694,8 +696,60 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
 
                 {/* Conteúdo principal */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Atividades Recentes */}
-                    <div className="lg:col-span-2">
+                    {/* Competição + Atividades Recentes */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Ranking de Cidades - Agora no topo para ser mais chamativo */}
+                        <div className="backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold flex items-center space-x-2">
+                                    <Trophy className="w-5 h-5 text-yellow-500" />
+                                    <span>Competição 2025</span>
+                                </h3>
+                                <div className="flex items-center space-x-1 text-xs bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded-full text-red-600 dark:text-red-400">
+                                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                                    <span>AO VIVO</span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {userData?.city && (
+                                    <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-200/50 dark:border-blue-600/30">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <div className="flex items-center space-x-2 mb-1">
+                                                    <MapPin className="w-4 h-4 text-blue-500" />
+                                                    <span className="font-medium text-sm text-gray-600 dark:text-gray-400">Sua cidade</span>
+                                                </div>
+                                                <div className="font-bold text-lg text-blue-600 dark:text-blue-400">
+                                                    {userData.city}
+                                                </div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    Competindo pela liderança
+                                                </div>
+                                            </div>
+                                            <div className="text-center">
+                                                <Trophy className="w-8 h-8 text-blue-500 mx-auto mb-1" />
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">Posição em disputa</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={() => setShowCityRankingModal(true)}
+                                    className="w-full px-4 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold cursor-pointer flex items-center justify-center space-x-2"
+                                >
+                                    <Trophy className="w-5 h-5" />
+                                    <span>Ver Ranking Completo</span>
+                                </button>
+
+                                <div className="text-xs text-center text-gray-500 dark:text-gray-400">
+                                    🎁 Cidade vencedora recebe eventos e investimentos especiais
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Histórico de Transações */}
                         <div className="backdrop-blur-sm rounded-2xl p-4 lg:p-6 border border-white/20 dark:border-gray-700/50 shadow-xl">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl lg:text-2xl font-bold flex items-center space-x-2">
@@ -888,9 +942,9 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                                                 <div className="flex justify-between items-center">
                                                     <div className="flex items-center space-x-3">
                                                         <span className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-110 ${index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
-                                                                index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
-                                                                    index === 2 ? 'bg-gradient-to-br from-amber-500 to-amber-700' :
-                                                                        'bg-gradient-to-br from-gray-400 to-gray-600'
+                                                            index === 1 ? 'bg-gradient-to-br from-gray-300 to-gray-500' :
+                                                                index === 2 ? 'bg-gradient-to-br from-amber-500 to-amber-700' :
+                                                                    'bg-gradient-to-br from-gray-400 to-gray-600'
                                                             }`}>
                                                             {index + 1}
                                                         </span>
@@ -953,6 +1007,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 onClose={() => setShowProfileModal(false)}
                 userData={userData}
                 darkMode={darkMode}
+            />
+
+            <CityRankingModal
+                isOpen={showCityRankingModal}
+                onClose={() => setShowCityRankingModal(false)}
+                darkMode={darkMode}
+                userCity={userData?.city}
             />
         </div>
     )
