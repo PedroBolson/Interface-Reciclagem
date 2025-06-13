@@ -50,7 +50,7 @@ const formatFirestoreDate = (firestoreDate: any): string => {
     if (firestoreDate instanceof Date) {
         return firestoreDate.toLocaleDateString('pt-BR')
     }
-
+    const muda = firestoreDate as any;
     // Se é um Timestamp do Firestore (tem propriedade seconds)
     if (firestoreDate.seconds) {
         return new Date(firestoreDate.seconds * 1000).toLocaleDateString('pt-BR')
