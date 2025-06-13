@@ -50,7 +50,6 @@ const formatFirestoreDate = (firestoreDate: any): string => {
     if (firestoreDate instanceof Date) {
         return firestoreDate.toLocaleDateString('pt-BR')
     }
-    const muda = firestoreDate as any;
     // Se é um Timestamp do Firestore (tem propriedade seconds)
     if (firestoreDate.seconds) {
         return new Date(firestoreDate.seconds * 1000).toLocaleDateString('pt-BR')
@@ -1007,6 +1006,13 @@ const DashboardPage = ({ darkMode, toggleDarkMode }: DashboardPageProps) => {
                 onClose={() => setShowProfileModal(false)}
                 userData={userData}
                 darkMode={darkMode}
+            />
+
+            <CityRankingModal
+                isOpen={showCityRankingModal}
+                onClose={() => setShowCityRankingModal(false)}
+                darkMode={darkMode}
+                userCity={userData?.city}
             />
         </div>
     )

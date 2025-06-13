@@ -304,7 +304,7 @@ const TransactionHistoryFull = ({ uid }: TransactionHistoryFullProps) => {
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
-                            className="flex items-center space-x-2 px-3 py-2 bg-gray-500 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:shadow-lg whitespace-nowrap"
+                            className="flex cursor-pointer items-center space-x-2 px-3 py-2 bg-gray-500 dark:bg-gray-600 text-white rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105 hover:shadow-lg whitespace-nowrap"
                         >
                             <X className="w-4 h-4" />
                             <span className="hidden sm:inline">Limpar filtros</span>
