@@ -120,26 +120,27 @@ const AppDownloadPage = ({ darkMode, toggleDarkMode }: AppDownloadPageProps) => 
                                 {
                                     title: "Interface Web Responsiva",
                                     description: "Experiência completa no navegador",
-                                    status: "progress",
+                                    status: "complete",
                                     icon: <Monitor className="w-5 h-5" />
                                 },
                                 {
                                     title: "PWA (Progressive Web App)",
                                     description: "App-like experience na web",
-                                    status: "planned",
+                                    status: "progress",
                                     icon: <Zap className="w-5 h-5" />
                                 },
                                 {
                                     title: "App iOS & Android",
                                     description: "Apps nativos para máxima performance",
-                                    status: "future",
+                                    status: "planned",
                                     icon: <Smartphone className="w-5 h-5" />
                                 }
                             ].map((item, index) => (
                                 <div key={index} className="flex items-center space-x-4 p-4 rounded-4xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
-                                    <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${item.status === 'progress' ? 'bg-green-500' :
-                                        item.status === 'planned' ? 'bg-amber-500' :
-                                            'bg-gray-400'
+                                    <div className={`inline-flex items-center justify-center w-10 h-10 rounded-full ${item.status === 'complete' ? 'bg-emerald-500' :
+                                        item.status === 'progress' ? 'bg-green-500' :
+                                            item.status === 'planned' ? 'bg-amber-500' :
+                                                'bg-gray-400'
                                         } text-white`}>
                                         {item.icon}
                                     </div>
@@ -153,13 +154,15 @@ const AppDownloadPage = ({ darkMode, toggleDarkMode }: AppDownloadPageProps) => 
                                         </p>
                                     </div>
 
-                                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${item.status === 'progress' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                                        item.status === 'planned' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300' :
-                                            'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
+                                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${item.status === 'complete' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300' :
+                                        item.status === 'progress' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                                            item.status === 'planned' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300' :
+                                                'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
                                         }`}>
-                                        {item.status === 'progress' ? 'Em andamento' :
-                                            item.status === 'planned' ? 'Planejado' :
-                                                'Futuro'}
+                                        {item.status === 'complete' ? 'Concluído' :
+                                            item.status === 'progress' ? 'Em andamento' :
+                                                item.status === 'planned' ? 'Planejado' :
+                                                    'Futuro'}
                                     </div>
                                 </div>
                             ))}
