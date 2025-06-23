@@ -464,7 +464,7 @@ const DemoPage = ({ darkMode, toggleDarkMode }: DemoPageProps) => {
                                                             </div>
 
                                                             {/* Tooltip com título */}
-                                                            <div className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 p-3 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 ${isCurrent ? 'opacity-100 scale-100' : 'opacity-0 scale-75'} ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} shadow-xl border max-w-[200px] text-center`}>
+                                                            <div className={`absolute ${index === 4 ? 'bottom-full mb-3' : 'top-full mt-3'} left-1/2 transform -translate-x-1/2 p-3 rounded-lg text-sm font-medium whitespace-nowrap transition-all duration-300 ${isCurrent ? 'opacity-100 scale-100' : 'opacity-0 scale-75'} ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'} shadow-xl border ${index === 2 ? 'min-w-[240px]' : ''} text-center`}>
                                                                 {step.title}
                                                             </div>
                                                         </div>
@@ -492,11 +492,11 @@ const DemoPage = ({ darkMode, toggleDarkMode }: DemoPageProps) => {
                                                                 y1={`${pos1.y}%`}
                                                                 x2={`${pos2.x}%`}
                                                                 y2={`${pos2.y}%`}
-                                                                stroke={isActiveConnection ? "#10b981" : showCycleConnection ? "#f59e0b" : "#d1d5db"}
+                                                                stroke={isActiveConnection ? "#10b981" : showCycleConnection ? "#f59e0b" : darkMode ? "#374151" : "#d1d5db"}
                                                                 strokeWidth="3"
                                                                 strokeDasharray={isActiveConnection ? "0" : showCycleConnection ? "8,4" : "10,5"}
                                                                 className="transition-all duration-1000"
-                                                                opacity={isActiveConnection ? 0.8 : showCycleConnection ? 0.6 : 0.3}
+                                                                opacity={isActiveConnection ? 0.8 : showCycleConnection ? 0.6 : darkMode ? 0.15 : 0.3}
                                                             />
 
                                                             {/* Seta indicando direção */}
