@@ -400,8 +400,8 @@ const HeroSection = () => {
                                     <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
                                     <path d="M13 7h7M13 12h7M13 17h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                                 </svg>
-                                <span className="hidden sm:inline text-center">Ver Demo Interativo</span>
-                                <span className="sm:hidden text-center">Ver Demo</span>
+                                <span className="hidden sm:inline text-center">Onboarding</span>
+                                <span className="sm:hidden text-center">Onboarding</span>
                             </span>
                         </button>
                     </div>
